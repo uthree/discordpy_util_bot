@@ -30,6 +30,25 @@ class UtilBot(commands.Bot):
 
     async def on_message(self, message):
         await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
+        uuidpref_len = len(self.command_prefix)
+        ctx = await self.get_context(message)
+
+    # async def invoke(self, ctx):
+    #     await super().invoke(ctx)
+    #     print("invoke:")
+    #     print(ctx)
+
+    # async def process_commands(self, message):
+    #     result = await super().process_commands(message)
+    #     print("process_commands:")
+    #     print(message)
+    #     print(result)
+
+    async def on_command_error(self, ctx, err):
+        await ctx.send(f":no_entry: `{ctx.command}` -> `{err}`")
+
+    async def on_command_completion(self, ctx):
+        await ctx.send(f":white_check_mark: `{ctx.command}`")
 
 
 default_token_file = {
@@ -59,6 +78,10 @@ if __name__ == "__main__":
         # cog読み込み処理
         with open("load_cogs.yml") as file:
             INITIAL_EXTENSIONS = yaml.safe_load(file)['cogs']
+        # 内部的なprefixをuuidにしてわかりにくくする処理
+        uuidpref = str(uuid.uuid4()) + "!"
+        print(f"prefix: {uuidpref}")
+
         # UtilBotのインスタンス化及び起動処理。
-        bot = UtilBot(command_prefix='!')
+        bot = UtilBot(command_prefix=uuidpref)
         bot.run(token)  # Botのトークンを入れて実行

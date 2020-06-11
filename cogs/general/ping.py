@@ -14,6 +14,10 @@ class Ping(commands.Cog):
     async def ping(self, ctx):
         await ctx.send('pong!')
 
+    @commands.command()
+    async def error_test(self, ctx):
+        raise "test"
+
 # Bot本体側からコグを読み込む際に呼び出される関数。
 
 
