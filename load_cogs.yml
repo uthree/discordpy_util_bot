@@ -1,2 +1,3 @@
 cogs:
-  - general.ping
+  - cogs.general.ping
+  - cogs.general.infomation

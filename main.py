@@ -1,7 +1,10 @@
 import os
 import yaml
+import uuid
 
 from discord.ext import commands
+
+import savedata
 
 
 class UtilBot(commands.Bot):
@@ -25,6 +28,9 @@ class UtilBot(commands.Bot):
         print(self.user.id)
         print('-----')
 
+    async def on_message(self, message):
+        await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
+
 
 default_token_file = {
     'using': 'main',
@@ -32,6 +38,7 @@ default_token_file = {
 }
 if __name__ == "__main__":
     if not os.path.exists("token.yml"):
+        # トークンファイルがない場合は自動的に作成。
         with open("token.yml", "w") as file:
             yaml.dump(default_token_file, file)
             print(
