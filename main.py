@@ -40,8 +40,8 @@ class UtilBot(commands.Bot):
         self._channel_data
 
     @property
-    def user_data(self):
-        self._setvet_data
+    def server_data(self):
+        self._setver_data
 
     # Botの準備完了時に呼び出されるイベント
 
@@ -53,7 +53,6 @@ class UtilBot(commands.Bot):
 
     async def on_message(self, message):
         await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
-        print("onmsg_1")
         uuidpref_len = len(self.command_prefix)
         ctx = await self.get_context(message)
 
