@@ -63,13 +63,14 @@ class UtilBot(commands.Bot):
             if ctx.message.content[0: len(pref)] == pref:
                 raw_command = ctx.message.content[len(pref):]
                 break
-        # commandを実行する
-        commands = raw_command.split("\n")  # 改行で区切る
-        for command in commands:
-            print(f"{command} を実行する。")
-            cmd_ctx = copy.copy(ctx)
-            cmd_ctx.message.content = f"{self.command_prefix}!{command}"
-            self.invoke(self, cmd_ctx)
+        if not raw_command == "":
+            # commandを実行する
+            commands = raw_command.split("\n")  # 改行で区切る
+            for command in commands:
+                print(f"{command} を実行する。")
+                cmd_ctx = copy.copy(ctx)
+                cmd_ctx.message.content = f"{self.command_prefix}!{command}"
+                await self.invoke(cmd_ctx)
 
     # async def invoke(self, ctx):
     #     await super().invoke(ctx)
