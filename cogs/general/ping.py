@@ -12,6 +12,7 @@ class Ping(commands.Cog):
     # コマンドの作成。コマンドはcommandデコレータで必ず修飾する。
     @commands.command()
     async def ping(self, ctx):
+        await ctx.send(ctx.message.content)
         await ctx.send('pong!')
 
 

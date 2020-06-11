@@ -54,7 +54,6 @@ class UtilBot(commands.Bot):
 
     async def on_message(self, message):
         await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
-        uuidpref_len = len(self.command_prefix) + 1  # 最後の ! 分を足しておく
         ctx = await self.get_context(message)
         # prefixを読み込み
         prefixes = self.server_data.read(ctx.guild.id).prefixes
@@ -72,10 +71,7 @@ class UtilBot(commands.Bot):
                 cmd_ctx.message.content = f"{self.command_prefix}{command}"
                 cmd_ctx.vaild = True
                 cmd_ctx.command = self.get_command(command)
-                print(cmd_ctx.command)
-                print(cmd_ctx.message.content)
-                await self.invoke(cmd_ctx)
-                # await cmd_ctx.reinvoke(call_hooks=True, restart=True)
+                # await self.invoke(cmd_ctx)
 
     # async def invoke(self, ctx):
     #     await super().invoke(ctx)
