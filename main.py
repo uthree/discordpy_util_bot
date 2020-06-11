@@ -69,8 +69,13 @@ class UtilBot(commands.Bot):
             for command in commands:
                 print(f"{command} を実行する。")
                 cmd_ctx = copy.copy(ctx)
-                cmd_ctx.message.content = f"{self.command_prefix}!{command}"
+                cmd_ctx.message.content = f"{self.command_prefix}{command}"
+                cmd_ctx.vaild = True
+                cmd_ctx.command = self.get_command(command)
+                print(cmd_ctx.command)
+                print(cmd_ctx.message.content)
                 await self.invoke(cmd_ctx)
+                # await cmd_ctx.reinvoke(call_hooks=True, restart=True)
 
     # async def invoke(self, ctx):
     #     await super().invoke(ctx)
