@@ -4,20 +4,28 @@
 
 # 実行方法
 
-1. 依存しているライブラリをインストール
+1. このリポジトリ をクローンする。
+
+2. 依存しているライブラリをインストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-2. 自分の bot トークンを生成された token.yml の main: 項に貼り付ける
+3. python コマンドで main.py を実行する。 すると自動的に token.yml が生成されてプログラムが終了する
+
+```bash
+python main.py
+```
+
+4. 自分の bot トークンを生成された token.yml の main: 項に貼り付ける
 
 ```yml
 main: ここにトークンを貼り付ける
 using: main # main項目のトークンを使う設定。
 ```
 
-3. python コマンドで main.py を実行する。
+5. もう一度 python コマンドで main.py を実行する。
 
 ```bash
 python main.py
