@@ -1,3 +1,6 @@
 cogs:
+  # generals
   - cogs.general.ping
   - cogs.general.infomation
+  # initializers
+  - cogs.init.init_server

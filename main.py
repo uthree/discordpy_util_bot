@@ -5,6 +5,7 @@ import uuid
 from discord.ext import commands
 
 import savedata
+import dataformats
 
 
 class UtilBot(commands.Bot):
@@ -21,7 +22,29 @@ class UtilBot(commands.Bot):
             except Exception:
                 traceback.print_exc()
 
+        # SaveDataオブジェクトを初期化
+        self._channel_data = savedata.SaveData(
+            "./data/channel", default_data=dataformats.channel_data.ChannelData())
+        self._user_data = savedata.SaveData(
+            "./data/userl", default_data=dataformats.user_data.UserData())
+        self._server_data = savedata.SaveData(
+            "./data/server", default_data=dataformats.server_data.ServerData())
+
+    # セーブデータオブジェクトのプロパティ
+    @property
+    def channel_data(self):
+        self._channel_data
+
+    @property
+    def user_data(self):
+        self._channel_data
+
+    @property
+    def user_data(self):
+        self._setvet_data
+
     # Botの準備完了時に呼び出されるイベント
+
     async def on_ready(self):
         print('-----')
         print(self.user.name)
@@ -30,6 +53,7 @@ class UtilBot(commands.Bot):
 
     async def on_message(self, message):
         await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
+        print("onmsg_1")
         uuidpref_len = len(self.command_prefix)
         ctx = await self.get_context(message)
 
@@ -47,8 +71,8 @@ class UtilBot(commands.Bot):
     async def on_command_error(self, ctx, err):
         await ctx.send(f":no_entry: `{ctx.command}` -> `{err}`")
 
-    async def on_command_completion(self, ctx):
-        await ctx.send(f":white_check_mark: `{ctx.command}`")
+    # async def on_command_completion(self, ctx):
+    #     await ctx.send(f":white_check_mark: `{ctx.command}`")
 
 
 default_token_file = {

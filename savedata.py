@@ -26,13 +26,13 @@ class SaveData:
         thread.start()
 
     def __loop(self):  # 呼び出し回数の少ないものを自動的にバッファから破棄してセーブする
-        print("ループ開始")
+        # print("ループ開始")
         while True:
             time.sleep(1)
-            print(self)
+            # print(self)
             for k in list(self.buffer.keys()):
-                print(k)
-                print(self.delete_counter)
+                # print(k)
+                # print(self.delete_counter)
                 if self.delete_counter[k] > 1:
                     self.delete_counter[k] -= 1
                 else:
@@ -41,7 +41,7 @@ class SaveData:
                     self.buffer.pop(k)
 
     def __load(self, key):  # ファイルから読み込む。
-        print(f"load {key}")
+        # print(f"load {key}")
         path = self.dir_name + key + ".yml"
         if os.path.exists(path):
             with open(path) as file:
@@ -51,7 +51,7 @@ class SaveData:
             return None
 
     def __save(self, key, value):  # ファイルに書き込む
-        print(f"save {key} {value}")
+        # print(f"save {key} {value}")
         path = self.dir_name + key + ".yml"
         with open(path, "w") as file:
             yaml.dump(value, file)
