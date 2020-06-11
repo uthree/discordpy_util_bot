@@ -54,4 +54,4 @@ if __name__ == "__main__":
             INITIAL_EXTENSIONS = yaml.safe_load(file)['cogs']
         # UtilBotのインスタンス化及び起動処理。
         bot = UtilBot(command_prefix='!')
-        bot.run(token)  # Botのトークン
+        bot.run(token)  # Botのトークンを入れて実行

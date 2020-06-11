@@ -3,7 +3,7 @@ from discord.ext import commands  # Bot Commands Frameworkのインポート
 # コグとして用いるクラスを定義。
 
 
-class TestCog(commands.Cog):
+class Ping(commands.Cog):
 
     # TestCogクラスのコンストラクタ。Botを受取り、インスタンス変数として保持。
     def __init__(self, bot):
@@ -18,4 +18,4 @@ class TestCog(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(TestCog(bot))  # TestCogにBotを渡してインスタンス化し、Botにコグとして登録する。
+    bot.add_cog(Ping(bot))  # TestCogにBotを渡してインスタンス化し、Botにコグとして登録する。
