@@ -33,15 +33,15 @@ class UtilBot(commands.Bot):
     # セーブデータオブジェクトのプロパティ
     @property
     def channel_data(self):
-        self._channel_data
+        return self._channel_data
 
     @property
     def user_data(self):
-        self._channel_data
+        return self._channel_data
 
     @property
     def server_data(self):
-        self._setver_data
+        return self._server_data
 
     # Botの準備完了時に呼び出されるイベント
 
@@ -53,8 +53,19 @@ class UtilBot(commands.Bot):
 
     async def on_message(self, message):
         await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
-        uuidpref_len = len(self.command_prefix)
+        uuidpref_len = len(self.command_prefix) + 1  # 最後の ! 分を足しておく
         ctx = await self.get_context(message)
+        # prefixを読み込み
+        prefixes = self.server_data.read(ctx.guild.id).prefixes
+        raw_command = ""
+        for pref in prefixes:  # どれかのプレフィックスにマッチするものがあれば、プレフィックスを排除した文字列を抽出。
+            if ctx.message.content[0: len(pref)] == pref:
+                raw_command = ctx.message.content[len(pref):]
+                break
+        # commandを実行する
+        commands = raw_command.split("\n")  # 改行で区切る
+        for command in commands:
+            print(command)
 
     # async def invoke(self, ctx):
     #     await super().invoke(ctx)
@@ -67,11 +78,12 @@ class UtilBot(commands.Bot):
     #     print(message)
     #     print(result)
 
-    async def on_command_error(self, ctx, err):
-        await ctx.send(f":no_entry: `{ctx.command}` -> `{err}`")
+    # async def on_command_error(self, ctx, err):
+    #     print(err)
+    #     await ctx.send(f":no_entry: `{ctx.command}` -> `{err}`")
 
     # async def on_command_completion(self, ctx):
-    #     await ctx.send(f":white_check_mark: `{ctx.command}`")
+    #    await ctx.send(f":white_check_mark: `{ctx.command}`")
 
 
 default_token_file = {

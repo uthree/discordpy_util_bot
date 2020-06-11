@@ -1,6 +1,6 @@
 import time
 import os
-import yaml
+import pickle
 import copy
 import threading
 
@@ -42,24 +42,27 @@ class SaveData:
 
     def __load(self, key):  # ファイルから読み込む。
         # print(f"load {key}")
-        path = self.dir_name + key + ".yml"
+        path = self.dir_name + str(key) + ".pkl"
         if os.path.exists(path):
-            with open(path) as file:
-                obj = yaml.safe_load(file)
+            with open(path, "rb") as file:
+                obj = pickle.load(file)
             return obj
         else:
-            return None
+            self.__save(key, self.default_data)
+            return self.default_data
 
     def __save(self, key, value):  # ファイルに書き込む
-        # print(f"save {key} {value}")
-        path = self.dir_name + key + ".yml"
-        with open(path, "w") as file:
-            yaml.dump(value, file)
+        #print(f"save {key} {value}")
+        path = self.dir_name + str(key) + ".pkl"
+        with open(path, "wb+") as file:
+            pickle.dump(value, file)
 
     def read(self, key):
         if not key in self.buffer:
-            load_result = __load(key)
+            load_result = self.__load(key)
             if load_result == None:
+                print("自動生成")
+                self.__save(key, self.default_data)
                 return copy.copy(self.default_data)
             else:
                 return load_result

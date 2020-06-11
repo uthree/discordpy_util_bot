@@ -1,6 +1,6 @@
+# 読み込むコグ一覧
 cogs:
   # generals
   - cogs.general.ping
   - cogs.general.infomation
-  # initializers
-  - cogs.init.init_server
+  - cogs.general.prefix

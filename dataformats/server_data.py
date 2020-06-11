@@ -5,7 +5,7 @@ class ServerData:
     # サーバープレフィックス
     @property
     def prefixes(self):
-        self._prefixes
+        return self._prefixes
 
     @prefixes.setter
     def prefixes(self, prefs):
