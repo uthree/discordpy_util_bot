@@ -1,6 +1,7 @@
 import os
 import yaml
 import uuid
+import copy
 
 from discord.ext import commands
 
@@ -65,7 +66,10 @@ class UtilBot(commands.Bot):
         # commandを実行する
         commands = raw_command.split("\n")  # 改行で区切る
         for command in commands:
-            print(command)
+            print(f"{command} を実行する。")
+            cmd_ctx = copy.copy(ctx)
+            cmd_ctx.message.content = f"{self.command_prefix}!{command}"
+            self.invoke(self, cmd_ctx)
 
     # async def invoke(self, ctx):
     #     await super().invoke(ctx)
