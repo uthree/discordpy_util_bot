@@ -38,11 +38,10 @@ python main.py
 - [x] prefix の後に、コマンドを改行区切りで送信することで、コマンドを順番に実行できるようにする
 - [ ] チャンネルを編集する系のコマンドを作ってみる
 
-# 参考にした記事
+# 参考にさせていただいた記事
 
-discord.py の Bot Commands Framework を用いた Bot 開発
-
-- https://qiita.com/Lazialize/items/81f1430d9cd57fbd82fb
+- [discord.py の Bot Commands Framework を用いた Bot 開発](https://qiita.com/Lazialize/items/81f1430d9cd57fbd82fb)
+- [Discord.py 公式ドキュメント](https://discordpy.readthedocs.io/ja/latest/)
 
 # 開発に用いた環境
 
