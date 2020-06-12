@@ -1,6 +1,7 @@
 import os
 import yaml
 import copy
+import uuid
 
 from discord.ext import commands
 
@@ -54,43 +55,32 @@ class UtilBot(commands.Bot):
         print(self.user.id)
         print('-----')
 
-    # async def on_message(self, message):
-    #     await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
-    #     if not message.author.id in self.command_running_users:
-    #         self.command_running_users.append(
-    #             message.author.id)  # コマンド実行中のユーザに追加
+    async def on_message(self, message):
+        await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
+        if not message.author.id in self.command_running_users:
+            self.command_running_users.append(
+                message.author.id)  # コマンド実行中のユーザに追加
 
-    #         ctx = await self.get_context(message)
-    #         # prefixを読み込み
-    #         prefixes = self.server_data.read(ctx.guild.id).prefixes
-    #         raw_command = ""
-    #         for pref in prefixes:  # どれかのプレフィックスにマッチするものがあれば、プレフィックスを排除した文字列を抽出。
-    #             if ctx.message.content[0: len(pref)] == pref:
-    #                 raw_command = ctx.message.content[len(pref):]
-    #                 break
-    #         if not raw_command == "":
-    #             # commandを実行する
-    #             commands = raw_command.split("\n")  # 改行で区切る
-    #             for command_chain in commands:
-    #                 print(f"{command_chain} を実行する。")
-    #                 # commandを get_commandする。 サブコマンドも考慮して、最も長い状態からとる。
-    #                 splited_chain = command_chain.split(' ')  # 空白で区切る
-    #                 i = 0
-    #                 command = None
-    #                 for l in reversed(range(0, len(splited_chain))):
-    #                     print(l)
-    #                     print(' '.join(splited_chain[0:l]))
-    #                     command = self.get_command(
-    #                         ' '.join(splited_chain[0:l]))
-    #                     if not command == None:
-    #                         i = l
-    #                         break
-    #                 args = splited_chain[i+1:]
-    #                 print(args)
-    #                 await self.invoke(command, *args)
+            ctx = await self.get_context(message)
+            # prefixを読み込み
+            prefixes = self.server_data.read(ctx.guild.id).prefixes
+            raw_command = ""
+            for pref in prefixes:  # どれかのプレフィックスにマッチするものがあれば、プレフィックスを排除した文字列を抽出。
+                if ctx.message.content[0: len(pref)] == pref:
+                    raw_command = ctx.message.content[len(pref):]
+                    break
+            if not raw_command == "":
+                # commandを実行する
+                commands = raw_command.split("\n")  # 改行で区切る
+                for command_chain in commands:
+                    print(f"{command_chain} を実行する。")
+                    msg = copy.copy(message)
+                    msg.content = self.command_prefix + command_chain
+                    cmd_ctx = await self.get_context(msg, cls=type(ctx))
+                    await cmd_ctx.reinvoke()
 
-    #         self.command_running_users.remove(
-    #             message.author.id)  # コマンド実行中のユーザから削除
+            self.command_running_users.remove(
+                message.author.id)  # コマンド実行中のユーザから削除
 
     # async def process_commands(self, message):
     #     result = await super().process_commands(message)
@@ -134,8 +124,9 @@ if __name__ == "__main__":
         with open("load_cogs.yml") as file:
             INITIAL_EXTENSIONS = yaml.safe_load(file)['cogs']
         # 内部的なprefixをuuidにしてわかりにくくする処理
-        print(f"prefix: u!")
+        uuidpref = str(uuid.uuid4())
+        print(f"prefix: {uuidpref}")
 
         # UtilBotのインスタンス化及び起動処理。
-        bot = UtilBot(command_prefix="u!")
+        bot = UtilBot(command_prefix=uuidpref)
         bot.run(token)  # Botのトークンを入れて実行
