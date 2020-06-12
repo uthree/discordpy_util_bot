@@ -5,7 +5,7 @@ from discord.ext import commands  # Bot Commands Frameworkのインポート
 
 class Prefix(commands.Cog):
 
-    # TestCogクラスのコンストラクタ。Botを受取り、インスタンス変数として保持。
+    # クラスのコンストラクタ。Botを受取り、インスタンス変数として保持。
     def __init__(self, bot):
         self.bot = bot
 

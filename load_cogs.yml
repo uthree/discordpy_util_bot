@@ -1,6 +1,5 @@
 # 読み込むコグ一覧
 cogs:
   # generals
-  - cogs.general.ping
-  - cogs.general.infomation
+  - cogs.general.utilites
   - cogs.general.prefix
