@@ -1,5 +1,4 @@
 # 読み込むコグ一覧
 cogs:
   # generals
-  - cogs.general.utilites
-  - cogs.general.prefix
+  - cogs.generals.general

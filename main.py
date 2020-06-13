@@ -27,7 +27,7 @@ class UtilBot(commands.Bot):
         self._channel_data = savedata.SaveData(
             "./data/channel", default_data=dataformats.channel_data.ChannelData())
         self._user_data = savedata.SaveData(
-            "./data/userl", default_data=dataformats.user_data.UserData())
+            "./data/user", default_data=dataformats.user_data.UserData())
         self._server_data = savedata.SaveData(
             "./data/server", default_data=dataformats.server_data.ServerData())
 
@@ -77,7 +77,10 @@ class UtilBot(commands.Bot):
                     msg = copy.copy(message)
                     msg.content = self.command_prefix + command_chain
                     cmd_ctx = await self.get_context(msg, cls=type(ctx))
-                    await cmd_ctx.reinvoke()
+                    try:
+                        await cmd_ctx.reinvoke()
+                    except:
+                        pass
 
             self.command_running_users.remove(
                 message.author.id)  # コマンド実行中のユーザから削除
