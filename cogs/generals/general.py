@@ -20,6 +20,11 @@ class General(commands.Cog):
         await ctx.send(str(msg))
 
     @commands.command()
+    async def userinfo(self, ctx, user: commands.MemberConverter):
+        await ctx.send(str(user))
+        # TODO: Embedとして送信するようにする
+
+    @commands.command()
     async def prefix(self, ctx, *prefixes):
         prefixes = list(prefixes)
         if len(prefixes) < 1:
