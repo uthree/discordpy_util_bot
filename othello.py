@@ -25,6 +25,32 @@ class Board:
             r += "\n"
         return r
 
+    def get_board_discord_emojis(self, color=None):
+        white = ":white_circle: "
+        black = ":black_circle: "
+        no_stone = ":green_square: "
+        canput_no_stone = ":yellow_square: "
+        r = ".\n:negative_squared_cross_mark: :regional_indicator_a: :regional_indicator_b: :regional_indicator_c: :regional_indicator_d: :regional_indicator_e: :regional_indicator_f: :regional_indicator_g: :regional_indicator_h:\n"
+        nums = [":one:", ":two:", ":three:", ":four:",
+                ":five:", ":six:", ":seven:", ":eight:"]
+        for y, arr in enumerate(self.board_data):
+            r += nums[y] + " "
+            for x, stone in enumerate(arr):
+                if stone == None:
+                    if not color == None:
+                        if self.check_can_put(color, x, y):
+                            r += canput_no_stone
+                        else:
+                            r += no_stone
+                    else:
+                        r += no_stone
+                elif stone == 1:
+                    r += black
+                elif stone == 2:
+                    r += white
+            r += "\n"
+        return r
+
     # 設置可能であるかを取得 取得できた場合は方向[[x, y], [x, y], [x, y]...]が帰ってくる
     def check_can_put(self, color, x, y):
         if self.get_color(x, y) != None:
