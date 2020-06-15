@@ -128,9 +128,3 @@ class Board:
                 if x == color:
                     cnt += 1
         return cnt
-
-
-# テスト用コード
-b = Board()
-print(b.check_can_put(2, 2, 4))
-print(b.get_board())

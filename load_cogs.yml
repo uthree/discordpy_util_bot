@@ -2,3 +2,5 @@
 cogs:
   # generals
   - cogs.generals.general
+  # othello
+  - cogs.othello.othello
