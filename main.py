@@ -77,10 +77,7 @@ class UtilBot(commands.Bot):
                     msg = copy.copy(message)
                     msg.content = self.command_prefix + command_chain
                     cmd_ctx = await self.get_context(msg, cls=type(ctx))
-                    try:
-                        await cmd_ctx.reinvoke()
-                    except:
-                        pass
+                    await cmd_ctx.reinvoke()
 
             self.command_running_users.remove(
                 message.author.id)  # コマンド実行中のユーザから削除

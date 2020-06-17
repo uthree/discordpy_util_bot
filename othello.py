@@ -65,12 +65,14 @@ class Board:
         # 設置可能な方向を取得する
         can_put_direction = []
         for d in another_color_find:
-            for i in range(1, 7):  # 調べるべき方向に7回分試行する
+            for i in range(1, 8):  # 調べるべき方向に7回分試行する
                 c = self.get_color(x + d[0] * i, y + d[1] * i)
                 if c == None:
                     break
                 else:
                     if c != color:
+                        print("CANPUT DIRECTION")
+                        print(c, color)
                         can_put_direction.append(d)
                         break
         if len(can_put_direction) < 1:
@@ -78,9 +80,9 @@ class Board:
         else:
             return can_put_direction
 
-    def check_can_put_any(color):  # 指定の色が、どれかのマスに配置できるか
-        for y in range(0, 7):
-            for x in range(0, 7):
+    def check_can_put_any(self, color):  # 指定の色が、どれかのマスに配置できるか
+        for y in range(0, 8):
+            for x in range(0, 8):
                 if self.check_can_put(color, x, y):
                     return True
                 else:
@@ -105,10 +107,15 @@ class Board:
         for d in directions:
             col = None
             count = 1
-            while not col == color:
+            while col != color:
                 col = self.get_color(x + d[0] * count, y + d[1] * count)
                 self.set_color(color, x + d[0] * count, y + d[1] * count)
+                print(count)
+                print(col, color)  # TODO: ループを抜ける処理を追加する
                 count += 1
+                if col == color:
+                    return None
+
         return True
 
     def winner(self):  # 勝利者の色を出力する 黒: 1 白: 2 引き分け: 3 勝利者なし: None
