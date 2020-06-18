@@ -53,15 +53,19 @@ class Board:
 
     # 設置可能であるかを取得 取得できた場合は方向[[x, y], [x, y], [x, y]...]が帰ってくる
     def check_can_put(self, color, x, y):
+        print("CAN_PUT_ARGS")
+        print(color, x, y)
         if self.get_color(x, y) != None:
             return False
         directions = [[1, 0], [1, 1], [0, 1], [1, -1],
                       [0, -1], [-1, 0], [-1, 1], [-1, -1]]  # チェックする８方向
         # 自分と違う色のマスがある方向を検索する
         another_color_find = [d for d in directions if self.get_color(
-            x + d[0], y + d[1]) != None and self.get_color(x + d[0], y + d[0]) != color]
+            x + d[0], y + d[1]) != None and self.get_color(x + d[0], y + d[1]) != color]
         if len(another_color_find) < 1:
             return False  # どこに自分と違う色のますがなければこの時点でfalse
+        print("ANOTHER_COLOR_FIND")
+        print(another_color_find)
         # 設置可能な方向を取得する
         can_put_direction = []
         for d in another_color_find:
@@ -69,12 +73,14 @@ class Board:
                 c = self.get_color(x + d[0] * i, y + d[1] * i)
                 if c == None:
                     break
+                if c == color:
+                    print("CANPUT DIRECTION")
+                    print(can_put_direction)
+                    print(c, color)
+                    can_put_direction.append(d)
+                    break
                 else:
-                    if c != color:
-                        print("CANPUT DIRECTION")
-                        print(c, color)
-                        can_put_direction.append(d)
-                        break
+                    continue
         if len(can_put_direction) < 1:
             return False
         else:
@@ -104,12 +110,15 @@ class Board:
         if not directions:
             return False  # 設置失敗　Falseを返す。
         self.set_color(color, x, y)
+        print("SET COLOR DIRECTIONS")
+        print(directions)
         for d in directions:
             col = None
             count = 1
             while col != color:
                 col = self.get_color(x + d[0] * count, y + d[1] * count)
                 self.set_color(color, x + d[0] * count, y + d[1] * count)
+                print("SET COLOR")
                 print(count)
                 print(col, color)  # TODO: ループを抜ける処理を追加する
                 count += 1

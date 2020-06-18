@@ -38,7 +38,7 @@ class Othello(commands.Cog):
     @othello.command()
     async def put(self, ctx, pos):
         # 座標を特定する
-        y = int(re.sub("\\D", "", str(pos)))
+        y = int(re.sub("\\D", "", str(pos))) - 1
         x = 0
         for a in self.alphabets:
             if a in pos:
@@ -47,9 +47,7 @@ class Othello(commands.Cog):
         print(x, y)
         board_data = self.boards[ctx.channel.id]
         if board_data['board'].check_can_put(board_data['now'], x, y):
-            board_data['board'].put(board_data['now'], x, y)  # TODO: バグ修正
-            await ctx.send(board_data['board'].get_board_discord_emojis(color=board_data['now']))
-
+            board_data['board'].put(board_data['now'], x, y)
             # 次のターンは白黒どちらかを判定する
             if board_data['now'] == 1:  # さっき黒だったなら
                 if board_data['board'].check_can_put_any(2):  # 白が設置可能なら
@@ -61,13 +59,14 @@ class Othello(commands.Cog):
                     board_data['now'] = 1  # 次のターンは黒
                 else:
                     board_data['now'] = 2  # 次のターンは白
-
-            if board_data['board'].winner:
-                if board_data['board'].winner == 1:  # black
+            # ボード送信
+            await ctx.send(board_data['board'].get_board_discord_emojis(color=board_data['now']))
+            if board_data['board'].winner() != None:
+                if board_data['board'].winner() == 1:  # black
                     await ctx.send(f":tada: 黒 < @{board_data['black']} > の勝利です。")
-                elif board_data['board'].winner == 2:  # white
+                elif board_data['board'].winner() == 2:  # white
                     await ctx.send(f":tada: 白 < @{board_data['white']} > の勝利です。")
-                elif board_data['board'].winner == 3:  # draw
+                elif board_data['board'].winner() == 3:  # draw
                     await ctx.send(f"引き分けです！！！")
                 # オセロの盤面のデータを初期化する
             else:
@@ -76,6 +75,9 @@ class Othello(commands.Cog):
                     await ctx.send(f"黒 <@{board_data['black']}> のターンです")
                 else:
                     await ctx.send(f"白 <@{board_data['white']}> のターンです")
+            self.boards[ctx.channel.id] = board_data
+            print("board_now")
+            print(board_data['now'])
         else:
             await ctx.send("そこには置けません！")
 
