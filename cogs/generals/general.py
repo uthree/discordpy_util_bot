@@ -50,6 +50,9 @@ class General(commands.Cog):
             selector_suffix = selector[1]
             if selector_prefix == "id":
                 members = [m for m in members if m.id == int(selector_suffix)]
+            if selector_prefix == "role_id":
+                members = [m for m in members if ctx.guild.get_role(
+                    int(selector_suffix)) in m.roles]
         self.bot.write_memory(ctx, ' '.join([str(m.id) for m in members]))
 
     @user.command(aliases=['i'])
