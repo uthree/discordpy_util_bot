@@ -73,8 +73,16 @@ class UtilBot(commands.Bot):
                 # commandを実行する
                 commands = raw_command.split("\n")  # 改行で区切る
                 for command_chain in commands:
+                    if command_chain == "":
+                        continue
                     print(f"{command_chain} を実行する。")
-                    await self.run_command(ctx, command_chain)
+                    try:
+                        await self.run_command(ctx, command_chain)
+                    except RuntimeError as e:
+                        pass
+                    except Exception as e:
+                        print(type(e))
+                        print(e)
 
             self.command_running_users.remove(
                 message.author.id)  # コマンド実行中のユーザから削除
