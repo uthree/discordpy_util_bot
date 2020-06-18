@@ -34,6 +34,9 @@ class UtilBot(commands.Bot):
         # コマンド実行中のユーザidを格納し、同時実行しないようにする。
         self.command_running_users = []
 
+        # コマンド間で値を受け渡すためのメモリ(ユーザ別)
+        self.command_memory = {}
+
     # セーブデータオブジェクトのプロパティ
     @property
     def channel_data(self):
@@ -55,6 +58,15 @@ class UtilBot(commands.Bot):
         print(self.user.id)
         print('-----')
 
+    def write_memory(self, ctx, data: str):
+        self.command_memory[ctx.author.id] = data
+
+    def read_memory(self, ctx):
+        return self.command_memory[ctx.author.id]
+
+    def reset_memory(self, ctx):
+        self.command_memory[ctx.author.id] = ""
+
     async def on_message(self, message):
         await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
         if not message.author.id in self.command_running_users:
@@ -71,6 +83,7 @@ class UtilBot(commands.Bot):
                     break
             if not raw_command == "":
                 # commandを実行する
+                self.reset_memory(ctx)  # メモリをリセット
                 commands = raw_command.split("\n")  # 改行で区切る
                 for command_chain in commands:
                     if command_chain == "":

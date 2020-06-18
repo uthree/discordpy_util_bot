@@ -10,18 +10,50 @@ class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # コマンドの作成。コマンドはcommandデコレータで必ず修飾する。
+    # doコマンド。 直前のメモリを引数にコマンドを実行する。
+    @commands.command()
+    async def do(self, ctx, *chain):
+        mem = self.bot.read_memory(ctx)
+        await self.bot.run_command(ctx, ' '.join(chain) + ' ' + mem)
+
+    # resetmemコマンド。 メモリをリセットする
+    @commands.command()
+    async def resetmem(self, ctx):
+        self.bot.reset_memory(ctx)
+
+    # stringコマンド。メモリに任意の文字列をのせる
+    @commands.command()
+    async def string(self, ctx, s: str):
+        self.bot.write_memory(ctx, s)
+
+    # pingコマンド
     @commands.command()
     async def ping(self, ctx):
         await ctx.send('pong!')
 
+    # sayコマンド
     @commands.command()
     async def say(self, ctx, msg):
         print(msg)
         await ctx.send(str(msg))
 
-    @commands.command()
-    async def userinfo(self, ctx, *users: commands.MemberConverter):
+    @commands.group()
+    async def user(self, ctx):
+        pass
+
+    @user.command(aliases=['s'])
+    async def select(self, ctx, *selectors):
+        members = ctx.guild.members
+        for selector in selectors:
+            selector = selector.split("=")
+            selector_prefix = selector[0]
+            selector_suffix = selector[1]
+            if selector_prefix == "id":
+                members = [m for m in members if m.id == int(selector_suffix)]
+        self.bot.write_memory(ctx, ' '.join([str(m.id) for m in members]))
+
+    @user.command(aliases=['i'])
+    async def info(self, ctx, *users: commands.MemberConverter):
         for user in users:
             embed = discord.Embed(
                 title=str(user), description=f"ID: {user.id}")
@@ -31,8 +63,7 @@ class General(commands.Cog):
 
             # ステータス表示処理
             status = user.status
-            status_string = ":purple_circle: Unknown"
-            print(status)
+            status_string = ":purple_circle: 不明"
             if status == discord.Status.dnd:
                 status_string = ":red_circle: 取り込み中"
             elif status == discord.Status.idle:
