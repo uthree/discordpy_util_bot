@@ -74,26 +74,16 @@ class UtilBot(commands.Bot):
                 commands = raw_command.split("\n")  # 改行で区切る
                 for command_chain in commands:
                     print(f"{command_chain} を実行する。")
-                    msg = copy.copy(message)
-                    msg.content = self.command_prefix + command_chain
-                    cmd_ctx = await self.get_context(msg, cls=type(ctx))
-                    await cmd_ctx.reinvoke()
+                    await self.run_command(ctx, command_chain)
 
             self.command_running_users.remove(
                 message.author.id)  # コマンド実行中のユーザから削除
 
-    # async def process_commands(self, message):
-    #     result = await super().process_commands(message)
-    #     print("process_commands:")
-    #     print(message)
-    #     print(result)
-
-    # async def on_command_error(self, ctx, err):
-    #     print(err)
-    #     await ctx.send(f":no_entry: `{ctx.command}` -> `{err}`")
-
-    # async def on_command_completion(self, ctx):
-    #    await ctx.send(f":white_check_mark: `{ctx.command}`")
+    async def run_command(self, ctx, command_chain):  # 任意のコマンドを実行
+        msg = copy.copy(ctx.message)
+        msg.content = self.command_prefix + command_chain
+        new_ctx = await self.get_context(msg, cls=type(ctx))
+        await new_ctx.reinvoke()
 
 
 default_token_file = {
