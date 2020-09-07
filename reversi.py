@@ -17,7 +17,7 @@ class Board:
         for y in self.board_data:
             for x in y:
                 if x == None:
-                    r += "o"
+                    r += "."
                 elif x == 1:
                     r += "b"
                 elif x == 2:

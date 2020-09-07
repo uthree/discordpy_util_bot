@@ -35,6 +35,10 @@ class Reversi(commands.Cog):
             await ctx.send(self.boards[ctx.channel.id]
                            ['board'].get_board_discord_emojis())
 
+    @reversi.command()  # リバーシを終了する。
+    async def stop(self, ctx):
+        del self.boards[ctx.channel.id]
+
     @reversi.command()
     async def put(self, ctx, pos):
         # 座標を特定する

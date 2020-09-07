@@ -4,6 +4,8 @@ import copy
 import uuid
 
 from discord.ext import commands
+import discord as discord
+import time
 
 import savedata
 import dataformats
@@ -85,29 +87,71 @@ class UtilBot(commands.Bot):
                 # commandを実行する
                 self.reset_memory(ctx)  # メモリをリセット
                 commands = raw_command.split("\n")  # 改行で区切る
-                for command_chain in commands:
-                    if command_chain == "":
+                # 進捗を辞書型に入れて、変化があり次第メッセージを更新する。
+                progress = {}
+                if len(commands) > 1:
+                    progress_embed = await ctx.channel.send(embed=self.generate_progress_list(progress))
+                i = 0
+                for command_string in commands:
+                    progress[i] = {
+                        "command": command_string,
+                        "status": "waiting",
+                        "message": None,
+                    }
+                    i += 1
+
+                # forで回して順番に実行
+                i = 0
+                for command_string in commands:
+                    progress[i]["status"] = "running"
+                    if len(commands) > 1:  # 複数件のコマンドの場合進捗を表示する
+                        await progress_embed.edit(embed=self.generate_progress_list(progress))
+
+                    if command_string == "":
                         continue
-                    print(f"{command_chain} を実行する。")
+                    print(f"{command_string} を実行する。")
                     try:
-                        await self.run_command(ctx, command_chain)
-                    except RuntimeError as e:
-                        pass
+                        await self.run_command(ctx, command_string)
+                        progress[i]["status"] = "success"
+                        progress[i]["message"] = f"完了 {self.read_memory(ctx)}"
                     except Exception as e:
                         print(type(e))
                         print(e)
+                        progress[i]["status"] = "error"
+                        progress[i]["message"] = "内部エラーが発生しました。"
+                    if len(commands) > 1:  # 複数件のコマンドの場合進捗を表示する
+                        await progress_embed.edit(embed=self.generate_progress_list(progress))
+                    time.sleep(1)
+                    i += 1
 
             self.command_running_users.remove(
                 message.author.id)  # コマンド実行中のユーザから削除
 
-    async def run_command(self, ctx, command_chain):  # 任意のコマンドを実行
-        splited_chain = command_chain.split(' ')
+    def generate_progress_list(self, progress):
+        s = ""
+        for k, p in progress.items():
+            status = p["status"]
+            if status == "waiting":
+                s += ":stop_button: "
+            elif status == "running":
+                s += ":arrow_forward: "
+            elif status == "success":
+                s += ":white_check_mark: "
+            elif status == "warning":
+                s += ":warning: "
+            elif status == "error":
+                s += ":red_circle: "
+            s += f"`{p['command']}` -> {p['message']} \n"
+        return discord.Embed(title="進捗", description=s)
+
+    async def run_command(self, ctx, command_string):  # 任意のコマンドを実行
+        splited_chain = command_string.split(' ')
         if splited_chain[0] == 'help':
             keywords = splited_chain[1:]
             await self.__help_command__(ctx, keywords)
         else:
             msg = copy.copy(ctx.message)
-            msg.content = self.command_prefix + command_chain
+            msg.content = self.command_prefix + command_string
             new_ctx = await self.get_context(msg, cls=type(ctx))
             await new_ctx.reinvoke()
 
@@ -120,6 +164,8 @@ class UtilBot(commands.Bot):
 default_token_file = {
     'using': 'main',
     'main': '<YOUR BOT TOKEN HERE>'
+
+
 }
 if __name__ == "__main__":
     if not os.path.exists("token.yml"):
@@ -151,3 +197,7 @@ if __name__ == "__main__":
         # UtilBotのインスタンス化及び起動処理。
         bot = UtilBot(command_prefix=uuidpref)
         bot.run(token)  # Botのトークンを入れて実行
+
+
+class CommandRunningError(Exception):
+    pass
