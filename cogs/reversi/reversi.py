@@ -17,17 +17,17 @@ class Reversi(commands.Cog):
     async def reversi(self, ctx):
         pass  # TODO: reversiマンドを実装して、遊べるようにする。
 
-    @Reversi.command()
+    @reversi.command()
     async def start(self, ctx):
         if not ctx.channel.id in self.boards:  # 新規にreversiを開始
             self.boards[ctx.channel.id] = {
-                'board': Reversilib.Board(),
+                'board': reversilib.Board(),
                 'now': 1,  # 黒のターン
                 'black': ctx.author.id,
                 'white': None,
             }
             await ctx.send(
-                f"<@{ctx.author.id}> あなたは黒です。\nリバーシの対戦相手を募集します。参加する場合は`Reversi start` コマンドを入力してください。")
+                f"<@{ctx.author.id}> あなたは黒です。\nリバーシの対戦相手を募集します。参加する場合は`reversi start` コマンドを入力してください。")
         else:  # すでに開始しているリバーシに参加
             self.boards[ctx.channel.id]['white'] = ctx.author.id
             await ctx.send(f"<@{ctx.author.id}> リバーシに白で参加しました。")
@@ -35,7 +35,7 @@ class Reversi(commands.Cog):
             await ctx.send(self.boards[ctx.channel.id]
                            ['board'].get_board_discord_emojis())
 
-    @Reversi.command()
+    @reversi.command()
     async def put(self, ctx, pos):
         # 座標を特定する
         y = int(re.sub("\\D", "", str(pos))) - 1

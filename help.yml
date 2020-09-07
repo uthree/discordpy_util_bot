@@ -1,0 +1,12 @@
+---
+generals:
+  - description: "基本的なコマンドカテゴリ"
+  - usage: ""
+  - tags:
+      - "基本"
+
+reversi:
+  - description: "リバーシゲームのコマンドのカテゴリです。"
+
+reversi start:
+  - リバーシゲームを開始します。
