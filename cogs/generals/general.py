@@ -17,7 +17,7 @@ class General(commands.Cog):
         await self.bot.run_command(ctx, ' '.join(chain) + ' ' + mem)
 
     # resetmemコマンド。 メモリをリセットする
-    @commands.command()
+    @commands.command(aliases=["reset", "init"])
     async def resetmem(self, ctx):
         self.bot.reset_memory(ctx)
 
@@ -33,9 +33,9 @@ class General(commands.Cog):
 
     # sayコマンド
     @commands.command()
-    async def say(self, ctx, msg):
+    async def say(self, ctx, *msg: str):
         print(msg)
-        await ctx.send(str(msg))
+        await ctx.send(' '.join(msg))
 
     @commands.group()
     async def user(self, ctx):
@@ -50,9 +50,11 @@ class General(commands.Cog):
             selector_suffix = selector[1]
             if selector_prefix == "id":
                 members = [m for m in members if m.id == int(selector_suffix)]
-            if selector_prefix == "role_id":
+            elif selector_prefix == "role_id":
                 members = [m for m in members if ctx.guild.get_role(
                     int(selector_suffix)) in m.roles]
+            else:
+                continue
         self.bot.write_memory(ctx, ' '.join([str(m.id) for m in members]))
 
     @user.command(aliases=['i'])
