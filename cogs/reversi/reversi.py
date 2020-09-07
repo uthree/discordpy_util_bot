@@ -1,5 +1,5 @@
 from discord.ext import commands  # Bot Commands Frameworkのインポート
-import Reversi as Reversilib
+import reversi as reversilib
 import re
 
 # コグとして用いるクラスを定義。
@@ -7,14 +7,14 @@ import re
 
 class Reversi(commands.Cog):
 
-    # Utilitesクラスのコンストラクタ。Botを受取り、インスタンス変数として保持。
+    # Reversiクラスのコンストラクタ。Botを受取り、インスタンス変数として保持。
     def __init__(self, bot):
         self.bot = bot
         self.boards = {}
         self.alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
     @commands.group()
-    async def Reversi(self, ctx):
+    async def reversi(self, ctx):
         pass  # TODO: reversiマンドを実装して、遊べるようにする。
 
     @Reversi.command()

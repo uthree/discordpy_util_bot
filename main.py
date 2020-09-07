@@ -104,14 +104,16 @@ class UtilBot(commands.Bot):
         splited_chain = command_chain.split(' ')
         if splited_chain[0] == 'help':
             keywords = splited_chain[1:]
-            await self.help_command(ctx, keywords)
+            await self.__help_command__(ctx, keywords)
         else:
             msg = copy.copy(ctx.message)
             msg.content = self.command_prefix + command_chain
             new_ctx = await self.get_context(msg, cls=type(ctx))
             await new_ctx.reinvoke()
 
-    async def help_command(self, ctx, keywords):  # ヘルプコマンド処理
+    async def __help_command__(self, ctx, keywords):  # ヘルプコマンド処理
+        for cmd in self.commands:
+            print(cmd)
         pass
 
 
