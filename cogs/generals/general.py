@@ -10,6 +10,11 @@ class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    # repository コマンド。 このbotのソースがあるリポジトリ を表示する。
+    @commands.command()
+    async def repository(self, ctx):
+        await ctx.send("https://github.com/uthree/discordpy_util_bot")
+
     # doコマンド。 直前のメモリを引数にコマンドを実行する。
     @commands.command()
     async def do(self, ctx, *chain):
