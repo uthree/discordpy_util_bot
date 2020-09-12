@@ -122,14 +122,8 @@ class UtilBot(commands.Bot):
                         print(type(e))
                         print(e)
                         # raise(e)
-                        if not splited_chain[0] in self.commands:
-                            self.write_memory(
-                                ctx, "未知のコマンドです。`help` を参照してください。")
-                            progress[i]["status"] = "warning"
-                            progress[i]["message"] = f"{self.read_memory(ctx)}"
-                        else:
-                            progress[i]["status"] = "error"
-                            progress[i]["message"] = f"内部エラーが発生しました。{self.read_memory(ctx)}"
+                        progress[i]["status"] = "error"
+                        progress[i]["message"] = f"内部エラーが発生しました。{self.read_memory(ctx)}"
                         # 未知のコマンドの場合はエラーを出す。
                     if len(commands) > 1:  # 複数件のコマンドの場合進捗を表示する
                         await progress_embed.edit(embed=self.generate_progress_list(progress))
