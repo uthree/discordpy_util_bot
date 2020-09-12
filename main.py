@@ -39,6 +39,10 @@ class UtilBot(commands.Bot):
         # コマンド間で値を受け渡すためのメモリ(ユーザ別)
         self.command_memory = {}
 
+        # ヘルプコマンドのデータを読み込み。
+        with open('./help.yml') as file:
+            self.help_data = yaml.safe_load(file)
+
     # セーブデータオブジェクトのプロパティ
     @property
     def channel_data(self):
@@ -117,8 +121,16 @@ class UtilBot(commands.Bot):
                     except Exception as e:
                         print(type(e))
                         print(e)
-                        progress[i]["status"] = "error"
-                        progress[i]["message"] = "内部エラーが発生しました。"
+                        # raise(e)
+                        if not splited_chain[0] in self.commands:
+                            self.write_memory(
+                                ctx, "未知のコマンドです。`help` を参照してください。")
+                            progress[i]["status"] = "warning"
+                            progress[i]["message"] = f"{self.read_memory(ctx)}"
+                        else:
+                            progress[i]["status"] = "error"
+                            progress[i]["message"] = f"内部エラーが発生しました。{self.read_memory(ctx)}"
+                        # 未知のコマンドの場合はエラーを出す。
                     if len(commands) > 1:  # 複数件のコマンドの場合進捗を表示する
                         await progress_embed.edit(embed=self.generate_progress_list(progress))
                     time.sleep(1)
@@ -156,9 +168,28 @@ class UtilBot(commands.Bot):
             await new_ctx.reinvoke()
 
     async def __help_command__(self, ctx, keywords):  # ヘルプコマンド処理
-        for cmd in self.commands:
-            print(cmd)
-        pass
+        results = {}  # 検索結果
+        kw_join = " ".join(keywords)  # キーワードの結合
+        result_string = ""  # 検索結果を文字列にする。
+        for key, value in self.help_data.items():
+            if key in kw_join or kw_join in key:  # ヘルプデータ内にコマンドのkeyがあれば追加。
+                results[key] = value
+            for kw in keywords:
+                if kw in value.get("description", ""):  # コマンド概要内にキーワードが含まれていれば検索結果に追加。
+                    results[key] = value
+        for key, value in results.items():  # 検索結果を文字列にする。
+            result_string += f"__{key}__\n"
+            result_string += "```css\n"
+            result_string += f"概要: {value.get('description', '不明')}\n"
+            result_string += f"使用方法: {value.get('usage', '使用不可')}\n"
+            result_string += "```\n\n"
+        if len(results) > 0:  # 結果があった場合のみ出力。
+            embed = discord.Embed(title="検索結果", description=result_string)
+            await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed(title=":red_circle: 検索失敗",
+                                  description="`help <キーワード>` で検索できます。 パラメータに誤りがないか確認してください。")
+            await ctx.send(embed=embed)
 
 
 default_token_file = {

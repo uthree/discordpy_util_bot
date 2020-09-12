@@ -1,16 +1,32 @@
 ---
 generals:
-  - description: "基本的なコマンドカテゴリ"
-  - tags:
-      - "基本"
+  description: "基本的なコマンドカテゴリ"
+  tags:
+    - "基本"
 
 reversi:
-  - description: "リバーシゲームのコマンドのカテゴリです。"
+  description: "リバーシゲームのコマンドのカテゴリです。"
 
 reversi start:
-  - descrdiption: "リバーシゲームを開始します。"
-  - usage: "reversi start"
+  descrdiption: "リバーシゲームを開始します。"
+  usage: "reversi start"
+
+reversi put:
+  description: "リバーシで石を設置します。 場所は`A1`, `B2` のような形式で指定してください。"
+  usage: "reversi put <場所>"
+
+say:
+  description: "メッセージをそのまま返します。"
+  usage: "say hello"
 
 repository:
-  - descrdiption: "このBotのソースコードのリポジトリを表示します。"
-  - usage: "repository"
+  descrdiption: "このBotのソースコードのリポジトリを表示します。"
+  usage: "repository"
+
+help:
+  description: "ヘルプコマンドを表示します。"
+  usage: "help <keyword>"
+
+do:
+  description: "前回のコマンドの結果を末尾に追加してコマンドを実行します。"
+  usage: "do <command>"
