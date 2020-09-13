@@ -123,7 +123,7 @@ class UtilBot(commands.Bot):
                     except Exception as e:
                         print(type(e))
                         print(e)
-                        raise(e)
+                        # raise(e) # エラーを表示したいときはこれのコメントを外す。
                         progress[i]["status"] = "error"
                         progress[i]["message"] = f"内部エラーが発生しました。{self.read_memory(ctx)}"
                         # 未知のコマンドの場合はエラーを出す。

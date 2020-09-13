@@ -27,6 +27,8 @@ class User(commands.Cog):
             elif selector_prefix == "role_id":
                 members = [m for m in members if ctx.guild.get_role(
                     int(selector_suffix)) in m.roles]
+            elif selector_prefix == "name":
+                members = [m for m in members if m.name == selector_suffix]
             else:
                 continue
         self.bot.write_memory(ctx, ' '.join([str(m.id) for m in members]))
