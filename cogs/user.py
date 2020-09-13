@@ -1,4 +1,5 @@
 from discord.ext import commands  # Bot Commands Frameworkのインポート
+import discord as discord
 # ユーザー管理用cog
 
 # コグとして用いるクラスを定義。
@@ -8,13 +9,13 @@ class User(commands.Cog):
 
     # Userクラスのコンストラクタ。Botを受取り、インスタンス変数として保持。
     def __init__(self, bot):
-        pass
+        self.bot = bot
 
     @commands.group()
     async def user(self, ctx):
         pass
 
-    @user.command(aliases=['s'])
+    @user.command(aliases=['s', 'sel'])
     async def select(self, ctx, *selectors):
         members = ctx.guild.members
         for selector in selectors:
@@ -30,7 +31,7 @@ class User(commands.Cog):
                 continue
         self.bot.write_memory(ctx, ' '.join([str(m.id) for m in members]))
 
-    @user.command(aliases=['i'])
+    @user.command(aliases=['i', 'infomation'])
     async def info(self, ctx, *users: commands.MemberConverter):
         for user in users:
             embed = discord.Embed(

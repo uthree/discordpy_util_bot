@@ -42,18 +42,6 @@ class General(commands.Cog):
         print(msg)
         await ctx.send(' '.join(msg))
 
-    @commands.command()
-    async def prefix(self, ctx, *prefixes):
-        prefixes = list(prefixes)
-        if len(prefixes) < 1:
-            await ctx.send("一つ以上のprefixを設定してください。")
-        else:
-            print(self.bot.server_data)
-            data = self.bot.server_data.read(ctx.guild.id)
-            data.prefixes = prefixes
-            self.bot.server_data.write(ctx.guild.id, data)
-            await ctx.send(f":white_check_mark: プレフィックスを変更しました: `{str(prefixes)}`")
-
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
 

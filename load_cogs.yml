@@ -2,6 +2,7 @@
 cogs:
   # generals
   - cogs.general
-  - cogs.moderation
+  - cogs.server
   - cogs.channel
+  - cogs.user
   - cogs.reversi
