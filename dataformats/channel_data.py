@@ -1,3 +1,4 @@
+from dataclasses import dataclass
+@dataclass
 class ChannelData:
-    def __init__(self):
-        pass
+    channel_command: str = "",

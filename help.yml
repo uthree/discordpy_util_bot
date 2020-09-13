@@ -30,3 +30,7 @@ help:
 do:
   description: "前回のコマンドの結果を末尾に追加してコマンドを実行します。"
   usage: "do <command>"
+
+prefix:
+  description: "コマンド プレフィックスを変更します。"
+  usage: "prefix <新しいプレフィックス> [新しいプレフィックス...]"

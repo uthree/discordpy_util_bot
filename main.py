@@ -25,11 +25,13 @@ class UtilBot(commands.Bot):
             except Exception:
                 traceback.print_exc()
 
-        # SaveDataオブジェクトを初期化
+        # channeldataオブジェクトを初期化
         self._channel_data = savedata.SaveData(
             "./data/channel", default_data=dataformats.channel_data.ChannelData())
+        # userdata
         self._user_data = savedata.SaveData(
             "./data/user", default_data=dataformats.user_data.UserData())
+        # serverdata
         self._server_data = savedata.SaveData(
             "./data/server", default_data=dataformats.server_data.ServerData())
 
@@ -121,7 +123,7 @@ class UtilBot(commands.Bot):
                     except Exception as e:
                         print(type(e))
                         print(e)
-                        # raise(e)
+                        raise(e)
                         progress[i]["status"] = "error"
                         progress[i]["message"] = f"内部エラーが発生しました。{self.read_memory(ctx)}"
                         # 未知のコマンドの場合はエラーを出す。
@@ -166,6 +168,8 @@ class UtilBot(commands.Bot):
         kw_join = " ".join(keywords)  # キーワードの結合
         result_string = ""  # 検索結果を文字列にする。
         for key, value in self.help_data.items():
+            if len(results) > 5:  # 長すぎる場合は省略
+                break
             if key in kw_join or kw_join in key:  # ヘルプデータ内にコマンドのkeyがあれば追加。
                 results[key] = value
             for kw in keywords:

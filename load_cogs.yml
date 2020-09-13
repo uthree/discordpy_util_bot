@@ -1,6 +1,7 @@
 # 読み込むコグ一覧
 cogs:
   # generals
-  - cogs.generals.general
-  # reversi
-  - cogs.reversi.reversi
+  - cogs.general
+  - cogs.moderation
+  - cogs.channel
+  - cogs.reversi
