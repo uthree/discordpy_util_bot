@@ -15,7 +15,7 @@ class Reversi(commands.Cog):
 
     @commands.group()
     async def reversi(self, ctx):
-        pass  # TODO: reversiマンドを実装して、遊べるようにする。
+        pass
 
     @reversi.command()
     async def start(self, ctx):

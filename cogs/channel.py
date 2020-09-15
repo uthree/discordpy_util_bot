@@ -18,6 +18,11 @@ class Channel(commands.Cog):
     async def select(self, ctx, *selectors):  # チャンネルを選択。
         pass
 
+    @channel.command()
+    async def test(self, ctx):  # テストコマンド。
+        category = ctx.channel.category
+        await category.create_text_channel("testchannel")
+
 # Bot本体側からコグを読み込む際に呼び出される関数。
 
 

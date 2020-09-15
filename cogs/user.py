@@ -33,7 +33,7 @@ class User(commands.Cog):
                 continue
         self.bot.write_memory(ctx, ' '.join([str(m.id) for m in members]))
 
-    @user.command(aliases=['i', 'infomation'])
+    @user.command(aliases=['i', 'information'])
     async def info(self, ctx, *users: commands.MemberConverter):
         for user in users:
             embed = discord.Embed(
