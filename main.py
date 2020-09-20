@@ -2,10 +2,10 @@ import os
 import yaml
 import copy
 import uuid
+import time
 
 from discord.ext import commands
 import discord as discord
-import time
 
 import savedata
 import dataformats
@@ -65,6 +65,10 @@ class UtilBot(commands.Bot):
         print(self.user.name)
         print(self.user.id)
         print('-----')
+
+        # ゲームを変更。
+        game = discord.Game("u!help")
+        await self.change_presence(status=discord.Status.online, activity=game)
 
     def write_memory(self, ctx, data: str):
         self.command_memory[ctx.author.id] = data
