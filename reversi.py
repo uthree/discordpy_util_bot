@@ -64,7 +64,6 @@ class Board:
             x + d[0], y + d[1]) != None and self.get_color(x + d[0], y + d[1]) != color]
         if len(another_color_find) < 1:
             return False  # どこに自分と違う色のますがなければこの時点でfalse
-        print("ANOTHER_COLOR_FIND")
         print(another_color_find)
         # 設置可能な方向を取得する
         can_put_direction = []
@@ -74,7 +73,6 @@ class Board:
                 if c == None:
                     break
                 if c == color:
-                    print("CANPUT DIRECTION")
                     print(can_put_direction)
                     print(c, color)
                     can_put_direction.append(d)
@@ -110,8 +108,6 @@ class Board:
         if not directions:
             return False  # 設置失敗　Falseを返す。
         self.set_color(color, x, y)
-        print("SET COLOR DIRECTIONS")
-        print(directions)
         for d in directions:
             col = None
             count = 1

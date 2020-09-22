@@ -67,9 +67,9 @@ class Reversi(commands.Cog):
             await ctx.send(board_data['board'].get_board_discord_emojis(color=board_data['now']))
             if board_data['board'].winner() != None:
                 if board_data['board'].winner() == 1:  # black
-                    await ctx.send(f":tada: 黒 < @{board_data['black']} > の勝利です。")
+                    await ctx.send(f":tada: 黒 <@{board_data['black']}> の勝利です。")
                 elif board_data['board'].winner() == 2:  # white
-                    await ctx.send(f":tada: 白 < @{board_data['white']} > の勝利です。")
+                    await ctx.send(f":tada: 白 <@{board_data['white']}> の勝利です。")
                 elif board_data['board'].winner() == 3:  # draw
                     await ctx.send(f"引き分けです！！！")
                 # リバーシの盤面のデータを初期化する
