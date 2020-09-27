@@ -39,7 +39,9 @@ class General(commands.Cog):
     # sayコマンド
     @commands.command()
     async def say(self, ctx, *msg: str):
-        print(msg)
+        # 全体メンションは無効化
+        msg.replace('@everyone', '')
+        msg.replace('@here', '')
         await ctx.send(' '.join(msg))
 
 
