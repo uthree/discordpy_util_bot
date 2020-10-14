@@ -19,6 +19,7 @@ class Channel(commands.Cog):
         pass
 
     @channel.command()
+    @commands.has_permissions(manage_guild=True)
     async def config(self, ctx, key=None, value=None):
         if key == "adblock":
             if value == "true":
