@@ -3,6 +3,7 @@ import yaml
 import copy
 import uuid
 import time
+import re
 
 from discord.ext import commands
 import discord as discord
@@ -79,8 +80,15 @@ class UtilBot(commands.Bot):
     def reset_memory(self, ctx):
         self.command_memory[ctx.author.id] = ""
 
+    async def adblock(self, message):  # ADBlock機能の動作。
+        print(message.content)
+        if re.match(r"(.+)discord\.gg(.+)", message.content):  # サーバ宣伝を自動的に削除する。
+            await message.delete()
+
     async def on_message(self, message):
         await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
+        if self._channel_data.read(message.channel.id).adblock:
+            await self.adblock(message)
         if not message.author.id in self.command_running_users:
             self.command_running_users.append(
                 message.author.id)  # コマンド実行中のユーザに追加

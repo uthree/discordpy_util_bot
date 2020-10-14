@@ -34,3 +34,13 @@ do:
 prefix:
   description: "コマンド プレフィックスを変更します。"
   usage: "prefix <新しいプレフィックス> [新しいプレフィックス...]"
+
+# チャンネル系
+
+channel config:
+  description: "チャンネルの設定を変更する。"
+  usage: "channel config <コンフィグ名> <値>"
+
+channel config adblock:
+  description: "チャンネルの広告ブロック機能の有効/無効 を切り替える。 (デフォルトは無効)"
+  usage: "channel config adblock [true/false]"

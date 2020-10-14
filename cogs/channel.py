@@ -8,7 +8,7 @@ class Channel(commands.Cog):
 
     # Channelクラスのコンストラクタ。Botを受取り、インスタンス変数として保持。
     def __init__(self, bot):
-        pass
+        self.bot = bot
 
     @commands.group()
     async def channel(self, ctx):  # channel 系コマンド。
@@ -19,9 +19,24 @@ class Channel(commands.Cog):
         pass
 
     @channel.command()
-    async def test(self, ctx):  # テストコマンド。
-        category = ctx.channel.category
-        await category.create_text_channel("testchannel")
+    async def config(self, ctx, key=None, value=None):
+        if key == "adblock":
+            if value == "true":
+                cdata = self.bot._channel_data.read(ctx.channel.id)
+                cdata.adblock = True
+                self.bot._channel_data.write(ctx.channel.id, cdata)
+                await ctx.send("宣伝ブロックが有効になりました。")
+            elif value == "false":
+                cdata = self.bot._channel_data.read(ctx.channel.id)
+                cdata.adblock = False
+                self.bot._channel_data.write(ctx.channel.id, cdata)
+                await ctx.send("宣伝ブロックが無効になりました。")
+            else:
+                cdata = self.bot._channel_data.read(ctx.channel.id)
+                await ctx.send(f"true/falseで指定してください。\n 現在は{cdata.adblock}")
+        else:
+            await ctx.send("そんなコンフィグはないです")
+
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
 
