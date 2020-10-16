@@ -4,6 +4,7 @@ import copy
 import uuid
 import time
 import re
+import datetime
 
 from discord.ext import commands
 import discord as discord
@@ -85,10 +86,29 @@ class UtilBot(commands.Bot):
         if re.match(r"(.+)discord\.gg(.+)", message.content):  # サーバ宣伝を自動的に削除する。
             await message.delete()
 
+    async def create_new_thread(self, message):  # スレッド作成
+        ctx = await self.get_context(message)
+        category = message.channel.category
+        # 更新のないスレッドを削除
+        channels = category.text_channels
+        if len(channels) > 20:  # チャンネル数が多いときは
+            for channel in channels:
+                # 7日以上前が最終発言のスレッドを削除する。
+                if (datetime.datetime.now(datetime.timezone.utc) - channel.last_message.created_at).days > 7:
+                    await channel.delete()
+        # 新規作成
+        await category.create_text_channel(message.content)
+
     async def on_message(self, message):
         await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
-        if self._channel_data.read(message.channel.id).adblock:
+
+        # ADBlock config
+        if self._channel_data.read(message.channel.id).adblock == True:
             await self.adblock(message)
+        # thread creator config
+        if self._channel_data.read(message.channel.id).thread_creator == True:
+            await self.create_new_thread(message)
+
         if not message.author.id in self.command_running_users:
             self.command_running_users.append(
                 message.author.id)  # コマンド実行中のユーザに追加

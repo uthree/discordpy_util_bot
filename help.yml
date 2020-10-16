@@ -44,3 +44,8 @@ channel config:
 channel config adblock:
   description: "チャンネルの広告ブロック機能の有効/無効 を切り替える。 (デフォルトは無効)"
   usage: "channel config adblock [true/false]"
+
+channel config thread:
+  description: "実行したチャンネルのあるカテゴリをフリーカテゴリにし、
+  スレッドを作成できるようにする。作成時に古いスレッド(7日間更新がない)場合、自動的に削除されてから新規スレッドが作成される。"
+  usage: "channel config thread [true/false]"

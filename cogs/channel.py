@@ -35,9 +35,22 @@ class Channel(commands.Cog):
             else:
                 cdata = self.bot._channel_data.read(ctx.channel.id)
                 await ctx.send(f"true/falseで指定してください。\n 現在は{cdata.adblock}")
+        elif key == "thread":
+            if value == "true":
+                cdata = self.bot._channel_data.read(ctx.channel.id)
+                cdata.thread_creator = True
+                self.bot._channel_data.write(ctx.channel.id, cdata)
+                await ctx.send("このカテゴリをスレッド用にし、このチャンネルをスレッド作成用チャンネルにしました。")
+            elif value == "false":
+                cdata = self.bot._channel_data.read(ctx.channel.id)
+                cdata.thread_creator = False
+                self.bot._channel_data.write(ctx.channel.id, cdata)
+                await ctx.send("スレッドの設定を解除しました。")
+            else:
+                cdata = self.bot._channel_data.read(ctx.channel.id)
+                await ctx.send(f"true/falseで指定してください。\n 現在は{cdata.adblock}")
         else:
             await ctx.send("そんなコンフィグはないです")
-
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
 
