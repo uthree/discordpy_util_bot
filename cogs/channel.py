@@ -26,12 +26,12 @@ class Channel(commands.Cog):
                 cdata = self.bot._channel_data.read(ctx.channel.id)
                 cdata.adblock = True
                 self.bot._channel_data.write(ctx.channel.id, cdata)
-                await ctx.send("宣伝ブロックが有効になりました。")
+                await ctx.send("宣伝ブロックが**有効**になりました。")
             elif value == "false":
                 cdata = self.bot._channel_data.read(ctx.channel.id)
                 cdata.adblock = False
                 self.bot._channel_data.write(ctx.channel.id, cdata)
-                await ctx.send("宣伝ブロックが無効になりました。")
+                await ctx.send("宣伝ブロックが**無効**になりました。")
             else:
                 cdata = self.bot._channel_data.read(ctx.channel.id)
                 await ctx.send(f"true/falseで指定してください。\n 現在は{cdata.adblock}")
