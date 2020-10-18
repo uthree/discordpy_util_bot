@@ -39,10 +39,11 @@ class General(commands.Cog):
     # sayコマンド
     @commands.command()
     async def say(self, ctx, *msg: str):
+        m = ' '.join(msg)
         # 全体メンションは無効化
-        msg.replace('@everyone', '')
-        msg.replace('@here', '')
-        await ctx.send(' '.join(msg))
+        m.replace('@everyone', '')
+        m.replace('@here', '')
+        await ctx.send(m)
 
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
