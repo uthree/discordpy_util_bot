@@ -26,31 +26,31 @@ class Channel(commands.Cog):
                 cdata = self.bot._channel_data.read(ctx.channel.id)
                 cdata.adblock = True
                 self.bot._channel_data.write(ctx.channel.id, cdata)
-                await ctx.send("宣伝ブロックが**有効**になりました。")
+                self.bot.set_command_result(ctx,"宣伝ブロックが**有効**になりました。")
             elif value == "false":
                 cdata = self.bot._channel_data.read(ctx.channel.id)
                 cdata.adblock = False
                 self.bot._channel_data.write(ctx.channel.id, cdata)
-                await ctx.send("宣伝ブロックが**無効**になりました。")
+                self.bot.set_command_result(ctx,"宣伝ブロックが**無効**になりました。")
             else:
                 cdata = self.bot._channel_data.read(ctx.channel.id)
-                await ctx.send(f"true/falseで指定してください。\n 現在は{cdata.adblock}")
+                self.bot.set_command_result(ctx,f"true/falseで指定してください。\n 現在は{cdata.adblock}")
         elif key == "thread":
             if value == "true":
                 cdata = self.bot._channel_data.read(ctx.channel.id)
                 cdata.thread_creator = True
                 self.bot._channel_data.write(ctx.channel.id, cdata)
-                await ctx.send("このカテゴリをスレッド用にし、このチャンネルをスレッド作成用チャンネルにしました。")
+                self.bot.set_command_result(ctx,"このカテゴリをスレッド用にし、このチャンネルをスレッド作成用チャンネルにしました。")
             elif value == "false":
                 cdata = self.bot._channel_data.read(ctx.channel.id)
                 cdata.thread_creator = False
                 self.bot._channel_data.write(ctx.channel.id, cdata)
-                await ctx.send("スレッドの設定を解除しました。")
+                self.bot.set_command_result(ctx,"スレッドの設定を解除しました。")
             else:
                 cdata = self.bot._channel_data.read(ctx.channel.id)
-                await ctx.send(f"true/falseで指定してください。\n 現在は{cdata.adblock}")
+                self.bot.set_command_result(ctx,f"true/falseで指定してください。\n 現在は{cdata.adblock}")
         else:
-            await ctx.send("そんなコンフィグはないです")
+            self.bot.set_command_result(ctx,f"コンフィグ `{key}`は存在しません。")
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
 

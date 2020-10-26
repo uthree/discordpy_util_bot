@@ -12,7 +12,6 @@ import discord as discord
 import savedata
 import dataformats
 
-
 class UtilBot(commands.Bot):
     # コンストラクタ
     def __init__(self, command_prefix):
@@ -39,13 +38,12 @@ class UtilBot(commands.Bot):
 
         # コマンド実行中のユーザidを格納し、同時実行しないようにする。
         self.command_running_users = []
-
-        # コマンド間で値を受け渡すためのメモリ(ユーザ別)
-        self.command_memory = {}
-
         # ヘルプコマンドのデータを読み込み。
         with open('./help.yml') as file:
             self.help_data = yaml.safe_load(file)
+
+        # コマンドの結果を格納するdict (message : str)
+        self.command_results = {}
 
     # セーブデータオブジェクトのプロパティ
     @property
@@ -59,9 +57,17 @@ class UtilBot(commands.Bot):
     @property
     def server_data(self):
         return self._server_data
+    
+    def set_command_result(self, ctx, result: str): # コマンドの結果を記載する。
+        self.command_results[ctx.message.id] = result
+
+    def get_command_result(self, ctx):
+        if ctx.message.id in self.command_results:
+            return self.command_results[ctx.message.id]
+        else:
+            return "None"
 
     # Botの準備完了時に呼び出されるイベント
-
     async def on_ready(self):
         print('-----')
         print(self.user.name)
@@ -71,15 +77,6 @@ class UtilBot(commands.Bot):
         # ゲームを変更。
         game = discord.Game("u!help")
         await self.change_presence(status=discord.Status.online, activity=game)
-
-    def write_memory(self, ctx, data: str):
-        self.command_memory[ctx.author.id] = data
-
-    def read_memory(self, ctx):
-        return self.command_memory[ctx.author.id]
-
-    def reset_memory(self, ctx):
-        self.command_memory[ctx.author.id] = ""
 
     async def adblock(self, message):  # ADBlock機能の動作。
         print(message.content)
@@ -123,12 +120,10 @@ class UtilBot(commands.Bot):
                     break
             if not raw_command == "":
                 # commandを実行する
-                self.reset_memory(ctx)  # メモリをリセット
                 commands = raw_command.split("\n")  # 改行で区切る
                 # 進捗を辞書型に入れて、変化があり次第メッセージを更新する。
                 progress = {}
-                if len(commands) > 1:
-                    progress_embed = await ctx.channel.send(embed=self.generate_progress_list(progress))
+                progress_embed = await ctx.channel.send(embed=self.generate_progress_list(progress))
                 i = 0
                 for command_string in commands:
                     progress[i] = {
@@ -142,25 +137,24 @@ class UtilBot(commands.Bot):
                 i = 0
                 for command_string in commands:
                     progress[i]["status"] = "running"
-                    if len(commands) > 1:  # 複数件のコマンドの場合進捗を表示する
-                        await progress_embed.edit(embed=self.generate_progress_list(progress))
+                    await progress_embed.edit(embed=self.generate_progress_list(progress))
 
                     if command_string == "":
                         continue
                     print(f"{command_string} を実行する。")
                     try:
+                        # コマンドの結果を格納するメッセージを送信
                         await self.run_command(ctx, command_string)
                         progress[i]["status"] = "success"
-                        progress[i]["message"] = f"完了 {self.read_memory(ctx)}"
+                        progress[i]["message"] = f" {self.get_command_result(ctx)} "
                     except Exception as e:
                         print(type(e))
                         print(e)
                         # raise(e) # エラーを表示したいときはこれのコメントを外す。
                         progress[i]["status"] = "error"
-                        progress[i]["message"] = f"内部エラーが発生しました。{self.read_memory(ctx)}"
+                        progress[i]["message"] = f"内部エラーが発生しました"
                         # 未知のコマンドの場合はエラーを出す。
-                    if len(commands) > 1:  # 複数件のコマンドの場合進捗を表示する
-                        await progress_embed.edit(embed=self.generate_progress_list(progress))
+                    await progress_embed.edit(embed=self.generate_progress_list(progress))
                     time.sleep(1)
                     i += 1
 
@@ -181,7 +175,7 @@ class UtilBot(commands.Bot):
                 s += ":warning: "
             elif status == "error":
                 s += ":red_circle: "
-            s += f"`{p['command']}` -> {p['message']} \n"
+            s += f"`{p['command']}` \n{p['message']} \n\n"
         return discord.Embed(title="進捗", description=s)
 
     async def run_command(self, ctx, command_string):  # 任意のコマンドを実行

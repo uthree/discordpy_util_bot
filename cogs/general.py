@@ -15,22 +15,6 @@ class General(commands.Cog):
     async def repository(self, ctx):
         await ctx.send("https://github.com/uthree/discordpy_util_bot")
 
-    # doコマンド。 直前のメモリを引数にコマンドを実行する。
-    @commands.command()
-    async def do(self, ctx, *chain):
-        mem = self.bot.read_memory(ctx)
-        await self.bot.run_command(ctx, ' '.join(chain) + ' ' + mem)
-
-    # resetmemコマンド。 メモリをリセットする
-    @commands.command(aliases=["reset", "init"])
-    async def resetmem(self, ctx):
-        self.bot.reset_memory(ctx)
-
-    # stringコマンド。メモリに任意の文字列をのせる
-    @commands.command()
-    async def string(self, ctx, s: str):
-        self.bot.write_memory(ctx, s)
-
     # pingコマンド
     @commands.command()
     async def ping(self, ctx):
