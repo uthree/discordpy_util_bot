@@ -205,7 +205,13 @@ class UtilBot(commands.Bot):
             result_string += f"__{key}__\n"
             result_string += "```css\n"
             result_string += f"概要: {value.get('description', '不明')}\n"
-            result_string += f"使用方法: {value.get('usage', '使用不可')}\n"
+
+            # prefixを読み込み
+            prefix = self.server_data.read(ctx.guild.id).prefixes[0]
+            # 使用方法を取得
+            usage = value.get('usage', None)
+            if usage:
+                result_string += f"使用方法: {prefix}{usage}\n"
             result_string += "```\n\n"
         if len(results) > 0:  # 結果があった場合のみ出力。
             embed = discord.Embed(title="検索結果", description=result_string)
