@@ -1,5 +1,5 @@
 from discord.ext import commands  # Bot Commands Frameworkのインポート
-import reversi as reversilib
+from mylibrary import reversi as reversilib
 import re
 
 # コグとして用いるクラスを定義。
@@ -38,6 +38,7 @@ class Reversi(commands.Cog):
     @reversi.command(aliases=['exit', 'end', 'leave'])  # リバーシを終了する。
     async def stop(self, ctx):
         del self.boards[ctx.channel.id]
+        self.bot.set_command_result(ctx,"リバーシを終了しました。")
 
     @reversi.command()
     async def put(self, ctx, pos):
@@ -84,6 +85,7 @@ class Reversi(commands.Cog):
             print(board_data['now'])
         else:
             await ctx.send("そこには置けません！")
+
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
 

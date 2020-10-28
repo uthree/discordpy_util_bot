@@ -15,6 +15,10 @@ reversi put:
   description: "リバーシで石を設置します。 場所は`A1`, `B2` のような形式で指定してください。"
   usage: "reversi put <場所>"
 
+reversi stop:
+  description: "リバーシを終了します。"
+  usage: "reversi stop"
+
 say:
   description: "メッセージをそのまま返します。"
   usage: "say hello"

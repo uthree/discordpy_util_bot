@@ -51,9 +51,13 @@ class Channel(commands.Cog):
                 self.bot.set_command_result(ctx,f"true/falseで指定してください。\n 現在は{cdata.adblock}")
         else:
             self.bot.set_command_result(ctx,f"コンフィグ `{key}`は存在しません。")
+    
+    @channel.command() # チャットログ取得コマンド(WIP)
+    async def get_chatlog(self, ctx): #todo: これを完成させる
+        async for message in ctx.channel.history(limit=10):
+            print(message.content)
+
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
-
-
 def setup(bot):
     bot.add_cog(Channel(bot))  # TestCogにBotを渡してインスタンス化し、Botにコグとして登録する。
