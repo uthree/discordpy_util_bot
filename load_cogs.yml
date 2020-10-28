@@ -6,3 +6,4 @@ cogs:
   - cogs.channel
   - cogs.user
   - cogs.reversi
+  - cogs.editor

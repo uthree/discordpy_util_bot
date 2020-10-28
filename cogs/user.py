@@ -31,7 +31,8 @@ class User(commands.Cog):
                 members = [m for m in members if m.name == selector_suffix]
             else:
                 continue
-        self.bot.write_memory(ctx, ' '.join([str(m.id) for m in members]))
+        self.bot.set_command_result(ctx,' '.join([str(m.id) for m in members]))
+
 
     @user.command(aliases=['i', 'information'])
     async def info(self, ctx, *users: commands.MemberConverter):
