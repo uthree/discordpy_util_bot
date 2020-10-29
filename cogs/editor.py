@@ -63,6 +63,8 @@ class Editor(commands.Cog):
                         editor.set_mode("add_line")
                     if re.match("\:i", cmd[0]): # 行挿入モード
                         editor.set_mode("insert_line")
+                    if re.match("\:d", cmd[0]): # 行削除
+                        editor.delete_line()
                     if re.match("\:q", cmd[0]): # エディタ終了
                         editor.quit_editor()
                     if re.match("\:w", cmd[0]): # 保存

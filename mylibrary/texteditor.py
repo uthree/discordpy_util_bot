@@ -114,6 +114,10 @@ class CUIEditor: #エディタ本体
         self.instances[self.now_editing_instance].add_content(content)
         self.log.append(f"{content} を追加。")
     
+    def delete_line(self):
+        e = self.instances[self.now_editing_instance]
+        del e.lines[e.cursor_line]
+    
     def set_cursor_line(self, line: int): # 行カーソルを代入
         self.instances[self.now_editing_instance].cursor_line = line
         self.log.append(f"{line+1} 行に移動しました")
@@ -146,6 +150,7 @@ class CUIEditor: #エディタ本体
             self.log.append(f"READ: {f.path} を読み込みました。")
         else: #読み込めない場合はスルー
             self.log.append(f"READ: {path} が見つかりませんでした。")
+    
 
 
     def get_view(self): #エディタを描画
