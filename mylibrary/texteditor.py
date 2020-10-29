@@ -58,6 +58,7 @@ class EditorInstance: # エディタインスタンス。 タブ一つ分
             d.append(TextFile(self.file_name, d, fs))
         f = fs.get_content(self.directory_path + self.file_name)
         f.write("\n".join(self.lines))
+        self.edited = False
 
     def get_view(self): #エディタの全貌を取得
         s = "```" + self.syntax + "\n"
@@ -165,7 +166,7 @@ class CUIEditor: #エディタ本体
         s += " 種類: " + editor.syntax
 
         #最後のログ表示
-        s += f" {self.log[-1]}"
+        s += f" | {self.log[-1]}"
 
         #枠を閉じる
         s += "\n```"

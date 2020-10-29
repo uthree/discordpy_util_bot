@@ -19,7 +19,7 @@ class Directory:
     def create_directory(self, name): #新規ディレクトリを作成
         if len([c for c in self.contents if c.name == name]) > 0: # 同じ名前のディレクトリがあったらエラーを吐く
             raise DirectoryCreationError(f"ディレクトリ :file_folder: {name} はすでに存在します。")
-        self.contents.append(Directory(name, self.parent, self._root_directory))
+        self.append(Directory(name, self, self._root_directory))
     
     def delete_content(self, content_name): #特定のコンテンツを削除
         self.contents = [c for c in self.contents if c.name != content_name]
@@ -51,7 +51,14 @@ class FileSystem(Directory):
     
     def mkdir(self, dirname: str): # ディレクトリ作成
         self.get_content(self.current_path).create_directory(dirname)
-    
+
+    def cd(self, path): #ディレクトリ移動
+        self.current_path = self.get_content(path).path
+
+    @property
+    def current_directory(self):
+        return self.get_content(self.current_path)
+
     @property
     def current_directory(self): #　カレントディレクトリを取得
         return self.get_content(self.current_path)
@@ -64,52 +71,41 @@ class FileSystem(Directory):
         else:
             return True
     
-    def get_content(self, path :str):
-        now = self
-        finding_directory = False
-        finding_parent = False
+    def get_content(self, path :str): #パスからコンテンツを取得
+        if path[0] == "/": #絶対パス
+            return self.get_content_from_absolute_path(path)
+        elif path.startswith("./"): #相対パス
+            path = self.current_path + path[2:]
+            return self.get_content_from_absolute_path(path)
+        elif path == ".": # カレントディレクトリ
+            return self.get_content_from_absolute_path(self.current_path)
+        elif path.startswith("../"): # 一つ外側
+            path = path[3:]
+            return self.get_content(self.get_content_from_absolute_path(self.current_path).parent.path + path)
+        elif path == "..": # 一つ外側のディレクトリ
+            return self.get_content(self.get_content_from_absolute_path(self.current_path).parent.path)
+        return self.get_content_from_absolute_path(self.current_path + path)
+
+
+
+    def get_content_from_absolute_path(self, path: str): # 絶対パスからコンテンツを取得
+        if path[0] == "/" and len(path) > 1: # 最初のスラッシュを削除する
+            path = path[1:]
+        if path[-1] == "/" and len(path) > 1: # 最後のスラッシュを削除する
+            path = path[:-1]
 
         if path == "/":
             return self
         
-        md = re.match("\.(/\|)(.+)", path) #相対パスの処理(./hogehoge の形) 
-        if md:
-            path = self.current_path + md[2]
-        
-        md = re.match("\.\.\/|\.\.", path) # カレントディレクトリの外( ..か../ )
-        if md:
-            return self.get_content(self.current_directory.path).parent
-
-        md = re.match("\.\./(.*)", path) #相対パス(カレントディレクトリの外)
-        if md:
-            path = self.get_content(self.current_directory.path).parent.path
-        
-        if not "/" in path: #相対パスの処理(ファイル名だけ)
-            path = self.current_path + path
-
-        md = re.match("~/(.+)",path) #ホームディレクトリ相対パス
-        if md:
-            path = self.home_path + md[1]
-        
-        md = re.match("(.+)/",path) #ディレクトリを探している場合
-        if md and len(path) > 1:
-            path = md[1]
-            finding_directory = True
-        
-        if path[0] == "/": #絶対パスの場合
-            path = path[1:]
-
-        for n in path.split("/"):
-            now = self
-            r = [d for d in now.contents if d.name == n]
-            if len(r) <= 0: # 見つからなかった場合
-                raise ContentNotFound(f"ファイルまたはディレクトリ \`{path}\` は存在しません。")
-            else: #見つけることができた場合
-                if finding_directory and type(r[0]) == Directory: #ディレクトリをお求めで、現在のものがディレクトリなら
-                    now = r[0]
-                elif type(r[0]) == TextFile:
-                    now = r[0]
+        now = self
+        for name in path.split("/"):
+            result = [c for c in now.contents if c.name == name]
+            if len(result) > 0:
+                now = result[0]
+            else:
+                raise ContentNotFound(f"{path} は存在しません。")
         return now
+
     
 
 # ファイル
@@ -119,12 +115,12 @@ class TextFile:
         self.name = name
         self._text : str = ""
         self.parent = parent
-        self.root_directory = fs
+        self._root_directory = fs
     
     @property
     def path(self):# 自身のパスを取得
         now = self
-        p = "/"
+        p = ""
         while not now == self._root_directory: #ルートディレクトリになるまで繰り返す。
             p = ("/" + now.name + p)
             now = now.parent

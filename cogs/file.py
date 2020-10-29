@@ -5,8 +5,6 @@ from mylibrary.filesystem import *
 # ファイルシステム系のCog
 
 # コグとして用いるクラスを定義。
-
-
 class File(commands.Cog):
 
     # Fileクラスのコンストラクタ。Botを受取り、インスタンス変数として保持。
@@ -21,25 +19,16 @@ class File(commands.Cog):
     @commands.command()
     async def cd(self, ctx, path): #カレントディレクトリを変更
         ud = self.bot.user_data.read(ctx.author.id) #load
-        if path[-1] != "/":
-            path += "/"
-        c = ud.filesystem.get_content(path)
-        if c:
-            ud.filesystem.current_path = c.path
-            self.bot.set_command_result(ctx, f":file_folder: {c.path} に移動しました。")
-            self.bot.user_data.write(ctx.author.id, ud) #save
-        else:
-            self.bot.set_command_result(ctx, f"そのようなディレクトリはありません。")
+        ud.filesystem.cd(path)
+        self.bot.set_command_result(ctx, f":file_folder: {ud.filesystem.current_path} に移動しました。")
+        self.bot.user_data.write(ctx.author.id, ud) #save
 
     @commands.command()
     async def mkdir(self, ctx, dirname): # 新規ディレクトリを作成。
         ud = self.bot.user_data.read(ctx.author.id) #load
-        #try:
         ud.filesystem.mkdir(dirname)
         self.bot.set_command_result(ctx, f"ディレクトリ :file_folder: {dirname} を作成しました。")
         self.bot.user_data.write(ctx.author.id, ud) #save
-        #except DirectoryCreationError:
-        #    self.bot.set_command_result(ctx, f"ディレクトリ :file_folder:  {dirname} はすでに存在します。")
 
     @commands.command() # カレントディレクトリの中身を列挙。
     async def ls(self, ctx):

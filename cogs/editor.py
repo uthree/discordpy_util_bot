@@ -27,10 +27,12 @@ class Editor(commands.Cog):
         if filename: # ファイル読み込み, 存在しなければ新規作成の処理
             data = []
             try:
+                f = ud.filesystem.get_content(filename)
                 data = ud.filesystem.get_content(filename).text.split("\n")
             except BotCommandException:
                 pass
             filepath = ud.filesystem.current_path
+            editor.instances[0].lines = data
             editor.instances[0].directory_path = filepath
             editor.instances[0].file_name = filename
 
@@ -68,7 +70,10 @@ class Editor(commands.Cog):
                         editor.write_file(fs, ctx.author)
                         self.bot.user_data.write(ctx.author.id, ud) # ユーザーデータを保存
                     if re.match("\:wq", cmd[0]): # 保存して終了
-                        pass
+                        fs = ud.filesystem
+                        editor.write_file(fs, ctx.author)
+                        self.bot.user_data.write(ctx.author.id, ud) # ユーザーデータを保存
+                        editor.quit_editor()
 
                     if len(cmd) > 1: # エスケープ入力
                         editor.add_content(' '.join(cmd[1:])) # メッセージを追加
