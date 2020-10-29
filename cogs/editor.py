@@ -1,7 +1,12 @@
-from discord.ext import commands  # Bot Commands Frameworkのインポート
-from mylibrary import texteditor
-import re
 import asyncio
+import re
+
+from discord.ext import commands  # Bot Commands Frameworkのインポート
+
+from mylibrary.filesystem import *
+from mylibrary import texteditor
+from mylibrary.exception import BotCommandException
+
 # テキストエディタ cog
 
 # コグとして用いるクラスを定義。
@@ -14,11 +19,22 @@ class Editor(commands.Cog):
     
 
     @commands.group(aliases=["edit", "textedit", "texteditor"])
-    async def editor(self,ctx, filename=None):
+    async def editor(self, ctx, filename="new_file"):
         editor = texteditor.CUIEditor() #エディタを初期化
         self.editors[ctx.author.id] = editor # エディタdictに追加
-        editor_message = await ctx.send(editor.get_view()) # エディタの初期画面を送信
+        ud = self.bot.user_data.read(ctx.author.id)
 
+        if filename: # ファイル読み込み, 存在しなければ新規作成の処理
+            data = []
+            try:
+                data = ud.filesystem.get_content(filename).text.split("\n")
+            except BotCommandException:
+                pass
+            filepath = ud.filesystem.current_path
+            editor.instances[0].directory_path = filepath
+            editor.instances[0].file_name = filename
+
+        editor_message = await ctx.send(editor.get_view()) # エディタの初期画面を送信
         while editor.using:
             #メッセージの返信を待つ
             def check_message(message): 
@@ -26,7 +42,6 @@ class Editor(commands.Cog):
             try:
                 user_input_message = await self.bot.wait_for("message",timeout=600.0, check=check_message)
             except asyncio.TimeoutError: # タイムアウト時の処理
-                print("TIMEOUT")
                 editor.using = False
                 await editor_message.delete()
                 del self.editors[ctx.author.id] # エディタdictから削除
@@ -46,6 +61,14 @@ class Editor(commands.Cog):
                         editor.set_mode("add_line")
                     if re.match("\:i", cmd[0]): # 行挿入モード
                         editor.set_mode("insert_line")
+                    if re.match("\:q", cmd[0]): # エディタ終了
+                        editor.quit_editor()
+                    if re.match("\:w", cmd[0]): # 保存
+                        fs = ud.filesystem
+                        editor.write_file(fs, ctx.author)
+                        self.bot.user_data.write(ctx.author.id, ud) # ユーザーデータを保存
+                    if re.match("\:wq", cmd[0]): # 保存して終了
+                        pass
 
                     if len(cmd) > 1: # エスケープ入力
                         editor.add_content(' '.join(cmd[1:])) # メッセージを追加
@@ -54,6 +77,8 @@ class Editor(commands.Cog):
                     editor.add_content(user_input_message.content) # メッセージを追加
                 await user_input_message.delete()#ユーザー側のメッセージを削除する
                 await editor_message.edit(content=editor.get_view()) # エディタ画面を更新
+        await editor_message.delete()
+        self.bot.user_data.write(ctx.author.id, ud) # ユーザーデータを保存
     
 
 

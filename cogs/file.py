@@ -9,7 +9,7 @@ from mylibrary.filesystem import *
 
 class File(commands.Cog):
 
-    # Filelクラスのコンストラクタ。Botを受取り、インスタンス変数として保持。
+    # Fileクラスのコンストラクタ。Botを受取り、インスタンス変数として保持。
     def __init__(self, bot):
         self.bot = bot
 
@@ -19,12 +19,14 @@ class File(commands.Cog):
         self.bot.set_command_result(ctx, f"{ud.filesystem.current_path}")
     
     @commands.command()
-    async def cd(self,ctx, path): #カレントディレクトリを変更
+    async def cd(self, ctx, path): #カレントディレクトリを変更
         ud = self.bot.user_data.read(ctx.author.id) #load
+        if path[-1] != "/":
+            path += "/"
         c = ud.filesystem.get_content(path)
         if c:
-            ud.filesystem.current_path = path
-            self.bot.set_command_result(ctx, f":file_folder: {path} に移動しました。")
+            ud.filesystem.current_path = c.path
+            self.bot.set_command_result(ctx, f":file_folder: {c.path} に移動しました。")
             self.bot.user_data.write(ctx.author.id, ud) #save
         else:
             self.bot.set_command_result(ctx, f"そのようなディレクトリはありません。")
@@ -43,6 +45,7 @@ class File(commands.Cog):
     async def ls(self, ctx):
         ud = self.bot.user_data.read(ctx.author.id) #load
         fs = ud.filesystem
+        s = ""
         for content in fs.current_directory.contents:
             if type(content) == Directory:
                 s += f":file_folder: {content.name}/\n"

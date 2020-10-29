@@ -1,4 +1,4 @@
-
+from mylibrary.filesystem import *
 #Discord向けテキストエディタのようなもの
 class EditorInstance: # エディタインスタンス。 タブ一つ分
     def __init__(self):
@@ -6,7 +6,8 @@ class EditorInstance: # エディタインスタンス。 タブ一つ分
         self.cursor_line : int = 0
         self.cursor_column : int = 0
         self.syntax : str = "text" 
-        self.file_name: str = "new file"
+        self.file_name: str = "new_file"
+        self.directory_path: str = "~/"
         self.height : int = 18
         self.width : int = 32
         self.mode = "add_line"
@@ -51,6 +52,13 @@ class EditorInstance: # エディタインスタンス。 タブ一つ分
             self.lines[self.cursor_line] = s # 上書き処理
     
     
+    def write_file(self, fs: FileSystem, author):        
+        d = fs.get_content(self.directory_path)
+        if not fs.check_content(self.directory_path + self.file_name): # ファイルが存在しない場合は新規作成
+            d.append(TextFile(self.file_name, d, fs))
+        f = fs.get_content(self.directory_path + self.file_name)
+        f.write("\n".join(self.lines))
+
     def get_view(self): #エディタの全貌を取得
         s = "```" + self.syntax + "\n"
         if self.mode == "add_line" or self.mode == "overwrite_line" or self.mode == "insert_line":
@@ -95,16 +103,35 @@ class CUIEditor: #エディタ本体
         self.now_editing_instance = 0
         self.editor_height : int = 18
         self.editor_width : int = 32
+        self.log = ["編集を開始しました。"]
     
     def add_content(self, content: str): # エディターインスタンスに新しいコンテンツを追加
         self.instances[self.now_editing_instance].add_content(content)
+        self.log.append(f"{content} を追加。")
     
     def set_cursor_line(self, line: int): # 行カーソルを代入
         self.instances[self.now_editing_instance].cursor_line = line
+        self.log.append(f"{line+1} 行に移動しました")
 
     def set_mode(self, mode: str):
         self.instances[self.now_editing_instance].mode = mode
+        self.log.append(f"{mode} モードに変更しました。")
+
+    def quit_editor(self):
+        del self.instances[self.now_editing_instance]
+        if len(self.instances) == 0: #エディタが全部終了したら
+            self.using = False
+    
+    def write_file(self, fs: FileSystem,  author):
+        self.instances[self.now_editing_instance].write_file(fs, author)
+        self.log.append(f"{self.instances[self.now_editing_instance].file_name} を保存しました。")
+
     def get_view(self): #エディタを描画
+        if len(self.instances) <= self.now_editing_instance: # 編集中のエディタが存在しない場合
+            if len(self.instances) == 0 : # 終了されていたら
+                return "```\nテキストエディタは終了されました。\n```"
+            else: #終了されていなかったら
+                self.now_editing_instance = len(self.instances) - 1 # 最後のindexにする。
         editor = self.instances[self.now_editing_instance]
         # サイズ補正
         editor.width = self.editor_width
@@ -136,6 +163,9 @@ class CUIEditor: #エディタ本体
 
         # syntax表示
         s += " 種類: " + editor.syntax
+
+        #最後のログ表示
+        s += f" {self.log[-1]}"
 
         #枠を閉じる
         s += "\n```"
