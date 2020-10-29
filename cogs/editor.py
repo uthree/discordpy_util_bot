@@ -69,13 +69,19 @@ class Editor(commands.Cog):
                         fs = ud.filesystem
                         editor.write_file(fs, ctx.author)
                         self.bot.user_data.write(ctx.author.id, ud) # ユーザーデータを保存
+                    if re.match("\:r", cmd[0]) and len(cmd) >= 1: #読み込み
+                        fs = ud.filesystem
+                        editor.read_file(fs, cmd[1])
+                    md = re.match("\:c(\d+)", cmd[0])
+                    if md: # 編集ファイル切り替え
+                        editor.change_edit_file(int(md[1]))
                     if re.match("\:wq", cmd[0]): # 保存して終了
                         fs = ud.filesystem
                         editor.write_file(fs, ctx.author)
                         self.bot.user_data.write(ctx.author.id, ud) # ユーザーデータを保存
                         editor.quit_editor()
 
-                    if len(cmd) > 1: # エスケープ入力
+                    if len(cmd) > 1 : # エスケープ入力
                         editor.add_content(' '.join(cmd[1:])) # メッセージを追加
 
                 else:

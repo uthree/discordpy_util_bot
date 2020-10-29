@@ -52,16 +52,20 @@ class EditorInstance: # エディタインスタンス。 タブ一つ分
             self.lines[self.cursor_line] = s # 上書き処理
     
     
-    def write_file(self, fs: FileSystem, author):        
+    def write_file(self, fs: FileSystem, author): #自信をファイルに保存
         d = fs.get_content(self.directory_path)
         if not fs.check_content(self.directory_path + self.file_name): # ファイルが存在しない場合は新規作成
             d.append(TextFile(self.file_name, d, fs))
         f = fs.get_content(self.directory_path + self.file_name)
         f.write("\n".join(self.lines))
         self.edited = False
+    
+    def read_file(self, fs: FileSystem, path: str): #自信をファイルから読み込み
+        f = fs.get_content(path) #ファイルオブジェクト
+        self.lines = f.text.split("\n") # 読み込み
 
     def get_view(self): #エディタの全貌を取得
-        s = "```" + self.syntax + "\n"
+        s = ""
         if self.mode == "add_line" or self.mode == "overwrite_line" or self.mode == "insert_line":
             l = ""
             line_begin = self.cursor_line - int(self.height/2) # 描画開始位置
@@ -125,7 +129,24 @@ class CUIEditor: #エディタ本体
     
     def write_file(self, fs: FileSystem,  author):
         self.instances[self.now_editing_instance].write_file(fs, author)
-        self.log.append(f"{self.instances[self.now_editing_instance].file_name} を保存しました。")
+        self.log.append(f"WRITE: {self.instances[self.now_editing_instance].file_name} を保存しました。")
+    
+    def change_edit_file(self, index: int): #編集するファイルを切り替える。
+        if len(self.instances) > index:
+            self.now_editing_instance = index
+    
+    def read_file(self, fs: FileSystem, path: str): #ファイルを読み込んでエディタインスタンスを追加
+        if fs.check_content(path):
+            f = fs.get_content(path)
+            instance = EditorInstance()
+            instance.read_file(fs, path)
+            instance.file_name = f.name
+            instance.directory_path = f.parent.path
+            self.instances.append(instance)
+            self.log.append(f"READ: {f.path} を読み込みました。")
+        else: #読み込めない場合はスルー
+            self.log.append(f"READ: {path} が見つかりませんでした。")
+
 
     def get_view(self): #エディタを描画
         if len(self.instances) <= self.now_editing_instance: # 編集中のエディタが存在しない場合
@@ -137,7 +158,24 @@ class CUIEditor: #エディタ本体
         # サイズ補正
         editor.width = self.editor_width
         editor.height = self.editor_height
-        s = editor.get_view()
+
+        s = "```" + editor.syntax + "\n"
+        tabs = ""
+        #タブ表記
+        for idx, instance in enumerate(self.instances):
+            if len(tabs) < editor.width - (3 + len(instance.file_name)): # 十分な空きスペースがあるなら
+                if instance == editor:
+                    tabs += f"<c{idx} {instance.file_name}>"
+                else:
+                    tabs += f" c{idx} {instance.file_name} "
+        s += tabs + "\n"
+
+
+        #上の線
+        s += "＿" * editor.width + "\n"
+
+        #編集中のエディタ
+        s += editor.get_view()
 
         #下の線
         s += "＿" * editor.width + "\n"
@@ -166,7 +204,10 @@ class CUIEditor: #エディタ本体
         s += " 種類: " + editor.syntax
 
         #最後のログ表示
-        s += f" | {self.log[-1]}"
+        last_log = self.log[-1]
+        if len(last_log) > 20:
+            last_log = last_log[0:15] + "..." 
+        s += f" | {last_log}"
 
         #枠を閉じる
         s += "\n```"
