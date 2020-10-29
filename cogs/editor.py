@@ -1,5 +1,6 @@
 from discord.ext import commands  # Bot Commands Frameworkのインポート
 from mylibrary import texteditor
+import asyncio
 # テキストエディタ cog
 
 # コグとして用いるクラスを定義。
@@ -11,22 +12,25 @@ class Editor(commands.Cog):
 
     @commands.command(aliases=["editor", "textedit", "texteditor"])
     async def edit(self,ctx, filename=None):
-        editor = texteditor.CUIEditor()
-        editor_message = await ctx.send(editor.get_view())
+        editor = texteditor.CUIEditor() #エディタを初期化
+        editor_message = await ctx.send(editor.get_view()) # エディタの初期画面を送信
+
 
         while editor.using:
-
             #メッセージの返信を待つ
             def check_message(message): 
                 return message.channel == ctx.channel and message.author == ctx.author
             try:
                 user_input_message = await self.bot.wait_for("message",timeout=60, check=check_message)
             except asyncio.TimeoutError: # タイムアウト時の処理
+                print("TIMEOUT")
                 editor.using = False
-                editor_message.delete()
+                await editor_message.delete()
             else: #メッセージを受け取ったときの処理。
+                await user_input_message.delete()#ユーザー側のメッセージを削除する
                 editor.add_content(user_input_message.content) # メッセージを追加
                 await editor_message.edit(content=editor.get_view()) # エディタ画面を更新
+
 
 
 

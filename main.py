@@ -149,12 +149,13 @@ class UtilBot(commands.Bot):
                         progress[i]["status"] = "success"
                         progress[i]["message"] = f" {self.get_command_result(ctx)} "
                     except Exception as e:
+                        self.set_command_result(ctx, traceback.format_exc(limit=2))
                         traceback.print_exc()
                         print(type(e))
                         print(e)
                         # raise(e) # エラーを表示したいときはこれのコメントを外す。
                         progress[i]["status"] = "error"
-                        progress[i]["message"] = f"内部エラーが発生しました"
+                        progress[i]["message"] = f"内部エラーが発生しました\n {self.get_command_result(ctx)}"
                         # 未知のコマンドの場合はエラーを出す。
                     await progress_embed.edit(embed=self.generate_progress_list(progress))
                     time.sleep(1)
