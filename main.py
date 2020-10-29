@@ -5,6 +5,7 @@ import uuid
 import time
 import re
 import datetime
+import traceback
 
 from discord.ext import commands
 import discord as discord
@@ -79,7 +80,7 @@ class UtilBot(commands.Bot):
         await self.change_presence(status=discord.Status.online, activity=game)
 
     async def adblock(self, message):  # ADBlock機能の動作。
-        print(message.content)
+        #print(message.content)
         if re.match(r"(.+)discord\.gg(.+)", message.content):  # サーバ宣伝を自動的に削除する。
             await message.delete()
 
@@ -141,14 +142,14 @@ class UtilBot(commands.Bot):
 
                     if command_string == "":
                         continue
-                    print(f"{command_string} を実行する。")
+                    #print(f"{command_string} を実行する。")
                     try:
                         # コマンドの結果を格納するメッセージを送信
                         await self.run_command(ctx, command_string)
                         progress[i]["status"] = "success"
                         progress[i]["message"] = f" {self.get_command_result(ctx)} "
                     except Exception as e:
-                        #traceback.print_exc()
+                        traceback.print_exc()
                         print(type(e))
                         print(e)
                         # raise(e) # エラーを表示したいときはこれのコメントを外す。
@@ -197,11 +198,11 @@ class UtilBot(commands.Bot):
         for key, value in self.help_data.items():
             if len(results) > 5:  # 長すぎる場合は省略
                 break
-            if key in kw_join or kw_join in key:  # ヘルプデータ内にコマンドのkeyがあれば追加。
-                results[key] = value
-            for kw in keywords:
+            for kw in reversed(keywords):
                 if kw in value.get("description", ""):  # コマンド概要内にキーワードが含まれていれば検索結果に追加。
                     results[key] = value
+            if key in kw_join:  # ヘルプデータ内にコマンドのkeyがあれば追加。
+                results[key] = value
         for key, value in results.items():  # 検索結果を文字列にする。
             result_string += f"__{key}__\n"
             result_string += "```css\n"

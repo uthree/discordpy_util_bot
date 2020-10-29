@@ -53,8 +53,8 @@ class Board:
 
     # 設置可能であるかを取得 取得できた場合は方向[[x, y], [x, y], [x, y]...]が帰ってくる
     def check_can_put(self, color, x, y):
-        print("CAN_PUT_ARGS")
-        print(color, x, y)
+        #print("CAN_PUT_ARGS")
+        #print(color, x, y)
         if self.get_color(x, y) != None:
             return False
         directions = [[1, 0], [1, 1], [0, 1], [1, -1],
@@ -73,8 +73,8 @@ class Board:
                 if c == None:
                     break
                 if c == color:
-                    print(can_put_direction)
-                    print(c, color)
+                    #print(can_put_direction)
+                    #print(c, color)
                     can_put_direction.append(d)
                     break
                 else:
@@ -114,9 +114,9 @@ class Board:
             while col != color:
                 col = self.get_color(x + d[0] * count, y + d[1] * count)
                 self.set_color(color, x + d[0] * count, y + d[1] * count)
-                print("SET COLOR")
-                print(count)
-                print(col, color)  # TODO: ループを抜ける処理を追加する
+                #print("SET COLOR")
+                #print(count)
+                #print(col, color)  # TODO: ループを抜ける処理を追加する
                 count += 1
                 if col == color:
                     return None
