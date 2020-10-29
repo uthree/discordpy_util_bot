@@ -9,23 +9,51 @@ class EditorInstance: # エディタインスタンス。 タブ一つ分
         self.file_name: str = "new file"
         self.height : int = 18
         self.width : int = 32
-        self.mode = "add"
+        self.mode = "add_line"
         self.edited = False
 
-    def add_content(self,s :str): #文字入力
-        if self.mode == "add":
-            for msg in s.split("\n"):
-                self.lines.append(msg)
+    def add_content(self,content :str): #文字入力
+        if self.mode == "add_line":
+            for s in content.split("\n"):
+                self.lines.append(s)
                 self.cursor_line = len(self.lines)
+        elif self.mode == "overwrite_line":
+            for s in content.split("\n"):
+                self.overwrite_line(s)
+                self.cursor_line += 1
+        elif self.mode == "insert_line":
+            for s in content.split("\n"):
+                self.insert_line(s)
+                self.cursor_line += 1
+            self.cursor_line -= 1
         self.edited = True
     
-    def insert_line(self,s :str): #行をラインカーソルのところに挿入。
-        self.lines[self.cursor_line] = s
+    def insert_line(self,s :str): #行をラインカーソルのところに挿入
+        if self.cursor_line > 9999: #行数制限
+            self.cursor_line = 9999
+
+        if len(self.lines) > self.cursor_line: # 存在する行であれば
+            self.lines.insert(self.cursor_line, s) # 挿入
+        else: # 存在しない行なら
+            while len(self.lines) <= self.cursor_line: # 十分な行数になるまで繰り返す
+                self.lines.append("")
+            self.lines.insert(self.cursor_line, s) # 挿入
+    
+    def overwrite_line(self,s :str): #行をラインカーソルのところに上書き
+        if self.cursor_line > 9999: #行数制限
+            self.cursor_line = 9999
+
+        if len(self.lines) > self.cursor_line: # 存在する行であれば
+            self.lines[self.cursor_line] = s # 上書き処理
+        else: # 存在しない行なら
+            while len(self.lines) <= self.cursor_line: # 十分な行数になるまで繰り返す
+                self.lines.append("")
+            self.lines[self.cursor_line] = s # 上書き処理
     
     
     def get_view(self): #エディタの全貌を取得
         s = "```" + self.syntax + "\n"
-        if self.mode == "add":
+        if self.mode == "add_line" or self.mode == "overwrite_line" or self.mode == "insert_line":
             l = ""
             line_begin = self.cursor_line - int(self.height/2) # 描画開始位置
             if line_begin < 0: # もしゼロ以下ならゼロにする。(マイナスから開始するとバグるから。)
@@ -68,9 +96,14 @@ class CUIEditor: #エディタ本体
         self.editor_height : int = 18
         self.editor_width : int = 32
     
-    def add_content(self, content : str): # エディターインスタンスに新しいコンテンツを追加
+    def add_content(self, content: str): # エディターインスタンスに新しいコンテンツを追加
         self.instances[self.now_editing_instance].add_content(content)
     
+    def set_cursor_line(self, line: int): # 行カーソルを代入
+        self.instances[self.now_editing_instance].cursor_line = line
+
+    def set_mode(self, mode: str):
+        self.instances[self.now_editing_instance].mode = mode
     def get_view(self): #エディタを描画
         editor = self.instances[self.now_editing_instance]
         # サイズ補正
@@ -91,10 +124,12 @@ class CUIEditor: #エディタ本体
         s += editor.file_name + " | "
 
         # モード表記
-        if editor.mode == "add":
+        if editor.mode == "add_line":
             s += "行追加"
-        elif editor.mode == "insert":
-            s += "文字列挿入"
+        elif editor.mode == "insert_line":
+            s += "行挿入"
+        elif editor.mode == "overwrite_line":
+            s += "行上書き"
         
         # カーソル行, 列を表示
         s += f" L{editor.cursor_line} C{editor.cursor_column}"
@@ -105,3 +140,4 @@ class CUIEditor: #エディタ本体
         #枠を閉じる
         s += "\n```"
         return s
+
