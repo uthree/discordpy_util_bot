@@ -31,9 +31,6 @@ help:
   description: "ヘルプコマンドを表示します。"
   usage: "help <keyword>"
 
-do:
-  description: "前回のコマンドの結果を末尾に追加してコマンドを実行します。"
-  usage: "do <command>"
 
 prefix:
   description: "コマンド プレフィックスを変更します。"
@@ -53,3 +50,24 @@ channel config thread:
   description: "実行したチャンネルのあるカテゴリをフリーカテゴリにし、
   スレッドを作成できるようにする。作成時に古いスレッド(7日間更新がない)場合、自動的に削除されてから新規スレッドが作成される。"
   usage: "channel config thread [true/false]"
+
+
+# File系
+
+cd:
+  description: 任意のパスに移動します
+  usage: cd <パス>
+
+pwd:
+  description: 現在のパスを確認します
+  usage: pwd
+
+mkdir:
+  description: 現在の場所に新しいディレクトリを作ります
+  usage: mkdir <ディレクトリ名>
+
+# edit系
+
+edit:
+  description: ファイルの編集を開始します。
+  usage: edit <ファイル名>
