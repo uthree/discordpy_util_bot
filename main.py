@@ -148,7 +148,7 @@ class UtilBot(commands.Bot):
                         progress[i]["status"] = "success"
                         progress[i]["message"] = f" {self.get_command_result(ctx)} "
                     except Exception as e:
-                        traceback.print_exc()
+                        #traceback.print_exc()
                         print(type(e))
                         print(e)
                         # raise(e) # エラーを表示したいときはこれのコメントを外す。

@@ -37,8 +37,11 @@ class Reversi(commands.Cog):
 
     @reversi.command(aliases=['exit', 'end', 'leave'])  # リバーシを終了する。
     async def stop(self, ctx):
-        del self.boards[ctx.channel.id]
-        self.bot.set_command_result(ctx,"リバーシを終了しました。")
+        if ctx.channel.id in self.boards:
+            del self.boards[ctx.channel.id]
+            self.bot.set_command_result(ctx,"リバーシを終了しました。")
+        else:
+            self.bot.set_command_result(ctx,"リバーシを開始していないので、終了できませんでした。")
 
     @reversi.command()
     async def put(self, ctx, pos):
