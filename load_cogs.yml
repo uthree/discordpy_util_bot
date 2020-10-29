@@ -7,3 +7,4 @@ cogs:
   - cogs.user
   - cogs.reversi
   - cogs.editor
+  - cogs.file

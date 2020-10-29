@@ -13,6 +13,8 @@ import discord as discord
 from mylibrary import savedata
 import dataformats
 
+from mylibrary.exception import BotCommandException
+
 class UtilBot(commands.Bot):
     # コンストラクタ
     def __init__(self, command_prefix):
@@ -148,14 +150,14 @@ class UtilBot(commands.Bot):
                         await self.run_command(ctx, command_string)
                         progress[i]["status"] = "success"
                         progress[i]["message"] = f" {self.get_command_result(ctx)} "
+                    except BotCommandException as e:
+                        progress[i]["status"] = "warning"
+                        progress[i]["message"] = str(e)
                     except Exception as e:
-                        self.set_command_result(ctx, traceback.format_exc(limit=2))
+                        self.set_command_result(ctx, traceback.format_exc(limit=5))
                         traceback.print_exc()
-                        print(type(e))
-                        print(e)
-                        # raise(e) # エラーを表示したいときはこれのコメントを外す。
                         progress[i]["status"] = "error"
-                        progress[i]["message"] = f"内部エラーが発生しました\n {self.get_command_result(ctx)}"
+                        progress[i]["message"] = f"内部エラーが発生しました\n ```\n{self.get_command_result(ctx)}\n```"
                         # 未知のコマンドの場合はエラーを出す。
                     await progress_embed.edit(embed=self.generate_progress_list(progress))
                     time.sleep(1)

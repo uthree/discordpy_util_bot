@@ -1,5 +1,8 @@
 from discord.ext import commands  # Bot Commands Frameworkのインポート
 import discord as discord
+from mylibrary.filesystem import Directory
+from mylibrary.filesystem import TextFile
+from mylibrary.filesystem import *
 
 # コグとして用いるクラスを定義。
 
@@ -28,11 +31,6 @@ class General(commands.Cog):
         m.replace('@everyone', '')
         m.replace('@here', '')
         await ctx.send(m)
-
-    @commands.command()
-    async def pwd(self, ctx): #現在のディレクトリを確認
-        ud = self.bot.user_data.read(ctx.author.id)
-        self.bot.set_command_result(f"{ctx, ud.filesystem.current_path}")
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
 
