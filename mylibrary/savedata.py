@@ -4,7 +4,6 @@ import pickle
 import copy
 import threading
 
-
 class SaveData:
 
     def __init__(self, dir_name, delete_count=60, default_data={}):

@@ -29,6 +29,10 @@ class General(commands.Cog):
         m.replace('@here', '')
         await ctx.send(m)
 
+    @commands.command()
+    async def pwd(self, ctx): #現在のディレクトリを確認
+        ud = self.bot.user_data.read(ctx.author.id)
+        self.bot.set_command_result(f"{ctx, ud.filesystem.current_path}")
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
 

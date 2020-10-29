@@ -53,7 +53,7 @@ class UtilBot(commands.Bot):
 
     @property
     def user_data(self):
-        return self._channel_data
+        return self._user_data
 
     @property
     def server_data(self):
@@ -179,7 +179,7 @@ class UtilBot(commands.Bot):
             elif status == "error":
                 s += ":red_circle: "
             s += f"`{p['command']}` \n{p['message']} \n\n"
-        return discord.Embed(title="進捗", description=s)
+        return discord.Embed(title="Commands", description=s)
 
     async def run_command(self, ctx, command_string):  # 任意のコマンドを実行
         splited_chain = command_string.split(' ')
