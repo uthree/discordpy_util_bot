@@ -31,7 +31,7 @@ class General(commands.Cog):
         m.replace('@everyone', '')
         m.replace('@here', '')
         await ctx.send(m)
-
+        
 # Bot本体側からコグを読み込む際に呼び出される関数。
 
 

@@ -21,36 +21,17 @@ class Channel(commands.Cog):
     @channel.command()
     @commands.has_permissions(manage_guild=True)  # 管理権限が必要
     async def config(self, ctx, key=None, value=None):
-        if key == "adblock":
-            if value == "true":
-                cdata = self.bot._channel_data.read(ctx.channel.id)
-                cdata.adblock = True
-                self.bot._channel_data.write(ctx.channel.id, cdata)
-                self.bot.set_command_result(ctx,"宣伝ブロックが**有効**になりました。")
-            elif value == "false":
-                cdata = self.bot._channel_data.read(ctx.channel.id)
-                cdata.adblock = False
-                self.bot._channel_data.write(ctx.channel.id, cdata)
-                self.bot.set_command_result(ctx,"宣伝ブロックが**無効**になりました。")
+        cd = self.bot.channel_data.read(ctx.channel.id)
+        if key:
+            if value:
+                cd.config.set_config(key, value)
+                self.bot.set_command_result(ctx, f"{key} を `{cd.config.get_config(key).value}` に設定しました。")
             else:
-                cdata = self.bot._channel_data.read(ctx.channel.id)
-                self.bot.set_command_result(ctx,f"true/falseで指定してください。\n 現在は{cdata.adblock}")
-        elif key == "thread":
-            if value == "true":
-                cdata = self.bot._channel_data.read(ctx.channel.id)
-                cdata.thread_creator = True
-                self.bot._channel_data.write(ctx.channel.id, cdata)
-                self.bot.set_command_result(ctx,"このカテゴリをスレッド用にし、このチャンネルをスレッド作成用チャンネルにしました。")
-            elif value == "false":
-                cdata = self.bot._channel_data.read(ctx.channel.id)
-                cdata.thread_creator = False
-                self.bot._channel_data.write(ctx.channel.id, cdata)
-                self.bot.set_command_result(ctx,"スレッドの設定を解除しました。")
-            else:
-                cdata = self.bot._channel_data.read(ctx.channel.id)
-                self.bot.set_command_result(ctx,f"true/falseで指定してください。\n 現在は{cdata.adblock}")
+                cd.config.get_config(key)
+                self.bot.set_command_result(ctx, f"{key} : `{cd.config.get_config(key).value}`")
         else:
-            self.bot.set_command_result(ctx,f"コンフィグ `{key}`は存在しません。")
+            self.bot.set_command_result(ctx, cd.config.get_view())
+        self.bot.channel_data.write(ctx.channel.id, cd)
     
     @channel.command() # チャットログ取得コマンド(WIP)
     async def get_chatlog(self, ctx): #todo: これを完成させる

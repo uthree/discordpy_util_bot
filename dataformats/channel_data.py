@@ -1,9 +1,7 @@
 from dataclasses import dataclass
+from mylibrary.config_data import *
 
-
-@dataclass
 class ChannelData:
-    channel_command: str = "",
-    # configで編集できるデータ
-    adblock: bool = False,  # サーバー宣伝自動削除
-    thread_creator: bool = False,  # スレッド作成用チャンネルかどうか
+    def __init__(self):
+        self.prefixes = ["u!"]
+        self.config = ChannelConfig()

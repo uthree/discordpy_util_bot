@@ -68,7 +68,7 @@ class UtilBot(commands.Bot):
         if ctx.message.id in self.command_results:
             return self.command_results[ctx.message.id]
         else:
-            return "None"
+            return ""
 
     # Botの準備完了時に呼び出されるイベント
     async def on_ready(self):
@@ -103,10 +103,10 @@ class UtilBot(commands.Bot):
         await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
 
         # ADBlock config
-        if self._channel_data.read(message.channel.id).adblock == True:
+        if self._channel_data.read(message.channel.id).config.get_config("adblock").value == True:
             await self.adblock(message)
         # thread creator config
-        if self._channel_data.read(message.channel.id).thread_creator == True:
+        if self._channel_data.read(message.channel.id).config.get_config("thread_creator").value == True:
             await self.create_new_thread(message)
 
         if not message.author.id in self.command_running_users:
@@ -123,7 +123,7 @@ class UtilBot(commands.Bot):
                     break
             if not raw_command == "":
                 # commandを実行する
-                commands = raw_command.split("\n")  # 改行で区切る
+                commands = re.split("\n", raw_command)  # 改行で区切る
                 # 進捗を辞書型に入れて、変化があり次第メッセージを更新する。
                 progress = {}
                 progress_embed = await ctx.channel.send(embed=self.generate_progress_list(progress))
@@ -132,7 +132,7 @@ class UtilBot(commands.Bot):
                     progress[i] = {
                         "command": command_string,
                         "status": "waiting",
-                        "message": None,
+                        "message": "",
                     }
                     i += 1
 
@@ -265,10 +265,6 @@ def main():
         # UtilBotのインスタンス化及び起動処理。
         bot = UtilBot(command_prefix=uuidpref)
         bot.run(token)  # Botのトークンを入れて実行
-
-class CommandRunningError(Exception):
-    pass
-
 
 if __name__ == "__main__":
     main()
