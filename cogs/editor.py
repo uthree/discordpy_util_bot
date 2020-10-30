@@ -83,7 +83,7 @@ class Editor(commands.Cog):
                         self.bot.user_data.write(ctx.author.id, ud) # ユーザーデータを保存
                         editor.quit_editor()
 
-                    if len(cmd) > 1 : # エスケープ入力
+                    if len(cmd) > 1: # エスケープ入力
                         editor.add_content(' '.join(cmd[1:])) # メッセージを追加
 
                 else:

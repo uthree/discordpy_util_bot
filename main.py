@@ -233,7 +233,8 @@ default_token_file = {
 
 
 }
-if __name__ == "__main__":
+
+def main():
     if not os.path.exists("token.yml"):
         # トークンファイルがない場合は自動的に作成。
         with open("token.yml", "w") as file:
@@ -255,6 +256,7 @@ if __name__ == "__main__":
 
         # cog読み込み処理
         with open("load_cogs.yml") as file:
+            global INITIAL_EXTENSIONS
             INITIAL_EXTENSIONS = yaml.safe_load(file)['cogs']
         # 内部的なprefixをuuidにしてわかりにくくする処理
         uuidpref = str(uuid.uuid4())
@@ -264,6 +266,10 @@ if __name__ == "__main__":
         bot = UtilBot(command_prefix=uuidpref)
         bot.run(token)  # Botのトークンを入れて実行
 
-
 class CommandRunningError(Exception):
     pass
+
+
+if __name__ == "__main__":
+    main()
+

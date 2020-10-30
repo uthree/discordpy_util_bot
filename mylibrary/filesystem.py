@@ -21,8 +21,8 @@ class Directory:
             raise DirectoryCreationError(f"ディレクトリ :file_folder: {name} はすでに存在します。")
         self.append(Directory(name, self, self._root_directory))
     
-    def delete_content(self, content_name): #特定のコンテンツを削除
-        self.contents = [c for c in self.contents if c.name != content_name]
+    def remove_content(self, content): #特定のコンテンツを削除
+        self.contents = [c for c in self.contents if c.name != content.name]
     
     def append(self, content):
         self.contents.append(content)

@@ -42,6 +42,15 @@ class File(commands.Cog):
                 s += f":page_facing_up: {content.name}\n"
         
         self.bot.set_command_result(ctx, s)
+    
+    @commands.command()
+    async def rm(self, ctx, path): #特定のファイルまたはディレクトリを削除する
+        ud = self.bot.user_data.read(ctx.author.id)
+        fs = ud.filesystem
+        content = fs.get_content(path)
+        content.parent.remove_content(content)
+        self.bot.user_data.write(ctx.author.id, ud)
+        self.bot.set_command_result(ctx, f"{content.path} を削除しました。")
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
 def setup(bot):
