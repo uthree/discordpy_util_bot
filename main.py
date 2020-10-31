@@ -6,6 +6,7 @@ import time
 import re
 import datetime
 import traceback
+import asyncio
 
 from discord.ext import commands
 import discord as discord
@@ -69,6 +70,30 @@ class UtilBot(commands.Bot):
             return self.command_results[ctx.message.id]
         else:
             return ""
+    
+    async def ask_choices(self, ctx, answers=[]): # 選択肢でユーザに質問する
+        if len(answers) == 0: # 回答リストが空の場合
+            answers = ["yes", "no"]
+        def check_message(message):
+            return message.author == ctx.author and message.channel == ctx.channel
+        try:
+            message = await self.wait_for('message', timeout=60.0, check=check_message)
+        except asyncio.TimeoutError:
+            pass
+        else:
+            #回答リストからマッチするものを検索
+            for answer in answers:
+                if type(answer) == re.Pattern:
+                    if answer.match(message.content):
+                        return answer
+                elif type(answer) == str:
+                    if answer == message.content:
+                        return answer
+                    if message.content in answer:
+                        return answer
+            #マッチしなかった場合
+            return None
+
 
     # Botの準備完了時に呼び出されるイベント
     async def on_ready(self):

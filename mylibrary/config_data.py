@@ -53,6 +53,19 @@ class BoolConfigValue(ConfigValue): # bool型コンフィグ
         else:
             raise ConfigTypeError("コンフィグの型が一致しません")
 
+class IntConfigValue(ConfigValue): # int型
+    def __init__(self, name, defautl_value : bool):
+        super().__init__(name, defautl_value) # 初期化
+    
+    def set_value(self, value:str):
+        super().set_value(int(value))
+
+class StrConfigValue(ConfigValue): # Str型
+    def __init__(self, name, defautl_value : bool):
+        super().__init__(name, defautl_value) # 初期化
+    
+    def set_value(self, value:str):
+        super().set_value(value)
 
 
 

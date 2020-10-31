@@ -1,3 +1,5 @@
+import os
+
 from discord.ext import commands  # Bot Commands Frameworkのインポート
 import discord as discord
 
@@ -51,6 +53,20 @@ class File(commands.Cog):
         content.parent.remove_content(content)
         self.bot.user_data.write(ctx.author.id, ud)
         self.bot.set_command_result(ctx, f"{content.path} を削除しました。")
+    
+    @commands.command()
+    async def export(self, ctx, path): #ファイルを出力する
+        ud = self.bot.user_data.read(ctx.author.id)
+        fs = ud.filesystem
+        content = fs.get_content(path)
+        if type(content) == TextFile:
+            s = content.text
+            with open(f"./{ctx.author.id}.txt", mode="w") as f:
+                f.write(s)
+            await ctx.send(file=discord.File(f"./{ctx.author.id}.txt"))
+            os.remove(f"./{ctx.author.id}.txt")
+        else:
+            raise BotCommandException(f"{path}はディレクトリです。")
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
 def setup(bot):

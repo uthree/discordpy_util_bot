@@ -66,6 +66,13 @@ mkdir:
   description: 現在の場所に新しいディレクトリを作ります
   usage: mkdir <ディレクトリ名>
 
+rm:
+  description: ディレクトリまたはファイルを削除します
+  usage: rm <パス>
+
+export:
+  description: ファイルをDiscord上にアップロードします。
+  usage: export <パス>
 # edit系
 
 edit:
