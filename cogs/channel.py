@@ -32,7 +32,7 @@ class Channel(commands.Cog):
         else:
             self.bot.set_command_result(ctx, cd.config.get_view())
         self.bot.channel_data.write(ctx.channel.id, cd)
-    
+
     @channel.command() # チャットログ取得コマンド(WIP)
     async def get_chatlog(self, ctx): #todo: これを完成させる
         async for message in ctx.channel.history(limit=10):

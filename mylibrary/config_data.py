@@ -27,6 +27,7 @@ class ChannelConfig(ConfigData): # チャンネルようコンフィグデータ
         super().__init__()
         self.configs.append(BoolConfigValue("adblock", False))
         self.configs.append(BoolConfigValue("thread_creator", False))
+        self.configs.append(BoolConfigValue("auto_reply", False))
 
     
 class ConfigValue:
