@@ -31,6 +31,17 @@ class General(commands.Cog):
         m.replace('@everyone', '')
         m.replace('@here', '')
         await ctx.send(m)
+
+    #進捗管理系
+    # taskコマンド 現在のタスクを表示する
+    @commands.group()
+    async def task(self, ctx):
+        pass
+
+    # task add コマンド
+    async def add(self, ctx, task_name, deadline):
+        pass
+
         
 # Bot本体側からコグを読み込む際に呼び出される関数。
 

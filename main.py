@@ -107,8 +107,7 @@ class UtilBot(commands.Bot):
         await self.change_presence(status=discord.Status.online, activity=game)
 
     async def adblock(self, message):  # ADBlock機能の動作。
-        #print(message.content)
-        if re.match(r"(.+)discord\.gg(.+)", message.content):  # サーバ宣伝を自動的に削除する。
+        if re.match(r"(.+)discord.gg(.+)", message.content):  # サーバ宣伝を自動的に削除する。
             await message.delete()
 
     async def create_new_thread(self, message):  # スレッド作成
@@ -126,7 +125,6 @@ class UtilBot(commands.Bot):
 
     async def on_message(self, message):
         await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
-
         # ADBlock config
         if self._channel_data.read(message.channel.id).config.get_config("adblock").value == True:
             await self.adblock(message)
