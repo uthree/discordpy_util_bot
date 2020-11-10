@@ -124,6 +124,8 @@ class UtilBot(commands.Bot):
         await category.create_text_channel(message.content)
 
     async def on_message(self, message):
+        if type(message.channel) == discord.DMChannel:
+            return 
         await super().on_message(message)  # スーパークラスのon_messageを呼び出し。
         # ADBlock config
         if self._channel_data.read(message.channel.id).config.get_config("adblock").value == True:
