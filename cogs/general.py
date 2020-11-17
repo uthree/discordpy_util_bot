@@ -1,5 +1,7 @@
 from discord.ext import commands  # Bot Commands Frameworkのインポート
 import discord as discord
+import json
+
 from mylibrary.filesystem import Directory
 from mylibrary.filesystem import TextFile
 from mylibrary.filesystem import *
@@ -39,9 +41,29 @@ class General(commands.Cog):
         pass
 
     # task add コマンド
+    @task.command
     async def add(self, ctx, task_name, deadline):
         pass
+    
+    #embed送信コマンド
+    @commands.command()
+    async def send_embed(self, ctx, path: str):
+        ud = self.bot.user_data.read(ctx.author.id)
+        fs = ud.filesystem
+        data = fs.get_content(path).text
 
+        parsed_data = json.loads(data)
+        embed = discord.Embed()
+
+        title = parsed_data.get("title", "")
+        description = parsed_data.get("description", "")
+
+        embed.title = str(title)
+        embed.description = str(description)
+        embed.color = 0xffffff
+
+        embed = discord.Embed.from_dict(parsed_data)
+        await ctx.send(embed=embed)
         
 # Bot本体側からコグを読み込む際に呼び出される関数。
 
