@@ -47,20 +47,14 @@ class General(commands.Cog):
     
     #embed送信コマンド
     @commands.command()
-    async def send_embed(self, ctx, path: str):
+    async def send_embed(self, ctx, *file_path):
         ud = self.bot.user_data.read(ctx.author.id)
         fs = ud.filesystem
-        data = fs.get_content(path).text
 
-        parsed_data = json.loads(data)
-        embed = discord.Embed()
-
-        title = parsed_data.get("title", "")
-        description = parsed_data.get("description", "")
-
-        embed.title = str(title)
-        embed.description = str(description)
-        embed.color = 0xffffff
+        parsed_data = {}
+        for path in file_path:
+            data = fs.get_content(path).text
+            parsed_data = {**parsed_data, **json.loads(data)}
 
         embed = discord.Embed.from_dict(parsed_data)
         await ctx.send(embed=embed)
