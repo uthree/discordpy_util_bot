@@ -81,7 +81,7 @@ edit:
   usage: edit <ファイル名>
 
 editor-usage:
-  desctiption: |-
+  description: |-
     \":\" を接頭辞としたエディタコマンドを使ってエディタを操作します。
     :<行番号> ... 行の移動。
     :a ... 行追加モード。末尾に行を追加します。
