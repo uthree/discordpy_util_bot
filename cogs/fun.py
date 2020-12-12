@@ -13,7 +13,7 @@ class Fun(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=["sintyoku"])
-    async def sintyoku(self,ctx):
+    async def sinchoku(self,ctx):
         links = [
             "https://cdn.discordapp.com/attachments/708828790796845189/787409537883439134/alicedoudesuka-300x168.jpg"
         ]
