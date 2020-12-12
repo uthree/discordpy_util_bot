@@ -8,3 +8,4 @@ cogs:
   - cogs.reversi
   - cogs.editor
   - cogs.file
+  - cogs.fun
