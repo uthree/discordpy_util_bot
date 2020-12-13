@@ -175,6 +175,9 @@ class UtilBot(commands.Bot):
                         await self.run_command(ctx, command_string)
                         progress[i]["status"] = "success"
                         progress[i]["message"] = f" {self.get_command_result(ctx)} "
+                    except ValueError:
+                        traceback.print_exc()
+                        progress[i]["message"] = "command not found."
                     except BotCommandException as e:
                         progress[i]["status"] = "warning"
                         progress[i]["message"] = str(e)
