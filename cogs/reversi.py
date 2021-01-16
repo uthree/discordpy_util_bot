@@ -31,6 +31,7 @@ class Reversi(commands.Cog):
         else:  # すでに開始しているリバーシに参加
             self.boards[ctx.channel.id]['white'] = ctx.author.id
             await ctx.send(f"<@{ctx.author.id}> リバーシに白で参加しました。")
+            await ctx.send("`reversi put <位置>` コマンドで石を設置します。\n`reversi stop` コマンドでゲームを終了します。")
             await ctx.send(f"<@{self.boards[ctx.channel.id]['black']}> 黒のターンです。")
             await ctx.send(self.boards[ctx.channel.id]
                            ['board'].get_board_discord_emojis())
@@ -52,7 +53,6 @@ class Reversi(commands.Cog):
             if a in pos:
                 x = self.alphabets.index(a)
         # 設置する
-        print(x, y)
         board_data = self.boards[ctx.channel.id]
         if board_data['board'].check_can_put(board_data['now'], x, y):
             board_data['board'].put(board_data['now'], x, y)
@@ -84,8 +84,6 @@ class Reversi(commands.Cog):
                 else:
                     await ctx.send(f"白 <@{board_data['white']}> のターンです")
             self.boards[ctx.channel.id] = board_data
-            print("board_now")
-            print(board_data['now'])
         else:
             await ctx.send("そこには置けません！")
 

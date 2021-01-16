@@ -1,4 +1,3 @@
-# 読み込むコグ一覧
 cogs:
   # generals
   - cogs.general
