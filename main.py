@@ -115,7 +115,7 @@ class UtilBot(commands.Bot):
         category = message.channel.category
         # 更新のないスレッドを削除
         channels = category.text_channels
-        if len(channels) > 20:  # チャンネル数が多いときは
+        if len(channels) > 10:  # チャンネル数が多いときは
             for channel in channels:
                 # 7日以上前が最終発言のスレッドを削除する。
                 if (datetime.datetime.now(datetime.timezone.utc) - channel.last_message.created_at).days > 7:
