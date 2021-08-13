@@ -23,8 +23,15 @@ class Fun(commands.Cog):
             "https://cdn.discordapp.com/attachments/787413181277798400/787413247686737930/images-3.jpeg"
         ]
         await ctx.send(random.choice(links))
-    
 
+    @commands.command(aliases=["sintyoku_dame"])
+    async def sinchoku_dame(self,ctx):
+        links = [
+                "https://ghippos.net/image/blog/20131008_1.jpg",
+                "https://livedoor.blogimg.jp/tank_make/imgs/a/9/a996bd7c.jpg",
+                "https://d2dcan0armyq93.cloudfront.net/photo/odai/400/8a1b02cea77695724af97b596cbc5acc_400.jpg"
+                ]
+        await ctx.send(random.choice(links))
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
 def setup(bot):
